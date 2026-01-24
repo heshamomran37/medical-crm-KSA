@@ -44,6 +44,16 @@ yarn-error.log*
 *.tsbuildinfo
 next-env.d.ts
 
-# WhatsApp Auth
+# WhatsApp Auth & Logs
 baileys_auth_info
 .wwebjs_auth
+.wwebjs_auth_v2
+*.log
+.next
+out
+build
+node_modules
+.DS_Store
+.env
+.env.local
+.vercel

@@ -1,0 +1,32 @@
+services:
+  app:
+    image: node:20-bullseye
+    working_dir: /app
+    volumes:
+      - .:/app
+      - /app/node_modules
+      - /app/.next
+    environment:
+      - DATABASE_URL=${DATABASE_URL}
+      - AUTH_SECRET=${AUTH_SECRET}
+      - AUTH_TRUST_HOST=true
+      - NEXTAUTH_URL=http://localhost:3005
+      - NEXT_PUBLIC_APP_URL=http://localhost:3005
+      - NEXT_SERVER_ACTIONS_ALLOW_ORIGINS=http://localhost:3005,http://127.0.0.1:3005
+      - NEXT_PUBLIC_CLINIC_WHATSAPP=${NEXT_PUBLIC_CLINIC_WHATSAPP}
+      - WHATSAPP_API_URL=http://whatsapp-api:8080
+      - NODE_ENV=development
+    ports:
+      - "3005:3000"
+    command: sh -c "npm install && npx prisma generate && npm run dev"
+    depends_on:
+      - whatsapp-api
+    restart: always
+
+  whatsapp-api:
+    image: aldinokemal/go-whatsapp-web-multidevice:latest
+    ports:
+      - "8080:8080"
+    volumes:
+      - ./whatsapp-data:/app/storages
+    restart: always

@@ -1,0 +1,470 @@
+"use server";
+
+import { signIn, signOut, auth } from "@/auth";
+import { AuthError } from "next-auth";
+import { prisma } from "@/lib/prisma";
+import { revalidatePath } from "next/cache";
+import bcrypt from "bcryptjs";
+import { z } from "zod";
+
+// --- VALIDATION SCHEMAS ---
+
+const EmployeeSchema = z.object({
+    name: z.string().min(2, "Name is too short"),
+    role: z.string().min(2, "Role is required"),
+    email: z.string().email().optional().or(z.literal("")),
+    phone: z.string().optional(),
+    whatsapp: z.string().optional(),
+    telegram: z.string().optional(),
+    instagram: z.string().optional(),
+    snapchat: z.string().optional(),
+    address: z.string().optional(),
+    username: z.string().min(3, "Username must be at least 3 characters").optional().or(z.literal("")),
+    password: z.string().min(3, "Password must be at least 3 characters").optional().or(z.literal("")),
+});
+
+const PatientSchema = z.object({
+    name: z.string().min(2, "Name is required"),
+    type: z.enum(["Individual", "Company"]),
+    email: z.string().email().optional().or(z.literal("")),
+    phone: z.string().optional(),
+    whatsapp: z.string().optional(),
+    telegram: z.string().optional(),
+    instagram: z.string().optional(),
+    snapchat: z.string().optional(),
+    facebook: z.string().optional(),
+    tiktok: z.string().optional(),
+    address: z.string().optional(),
+
+    gender: z.string().optional(),
+    birthDate: z.string().optional(),
+    status: z.string().optional(),
+    followUpStatus: z.string().optional(),
+});
+
+// --- HELPER: LOG ACTIVITY ---
+
+async function logActivity(action: string, description: string) {
+    try {
+        const session = await auth();
+        await prisma.activityLog.create({
+            data: {
+                action,
+                description,
+                userId: session?.user?.name || "System",
+            },
+        });
+    } catch (e) {
+        console.error("Failed to log activity:", e);
+    }
+}
+
+// --- AUTH ACTIONS ---
+
+export async function authenticate(
+    prevState: string | undefined,
+    formData: FormData,
+) {
+    try {
+        await signIn("credentials", {
+            username: formData.get("username"),
+            password: formData.get("password"),
+            redirect: false,
+        });
+
+        // If we get here, login was successful (no error thrown)
+        // We can manually redirect now
+    } catch (error) {
+        if (error instanceof AuthError) {
+            switch (error.type) {
+                case "CredentialsSignin":
+                    return "Invalid credentials.";
+                default:
+                    return "Something went wrong.";
+            }
+        }
+        throw error;
+    }
+
+    // Manual redirect after successful login (outside try-catch to avoid catching NEXT_REDIRECT)
+    // However, since we used redirect: false, signIn won't throw a redirect error.
+    // So we can just redirect explicitly.
+    const { redirect } = await import("next/navigation");
+    redirect("/dashboard");
+}
+
+export async function signOutAction() {
+    await signOut({ redirectTo: "/login" });
+}
+
+// --- EMPLOYEE ACTIONS ---
+
+export async function createEmployee(prevState: { message: string } | undefined, formData: FormData) {
+    try {
+        const rawData = Object.fromEntries(formData.entries());
+        const validatedFields = EmployeeSchema.safeParse(rawData);
+
+        if (!validatedFields.success) {
+            return { message: "Validation failed: " + validatedFields.error.errors[0].message };
+        }
+
+        const { name, role, email, phone, whatsapp, telegram, instagram, snapchat, address, username, password } = validatedFields.data;
+
+        const hashedPassword = password ? await bcrypt.hash(password, 10) : null;
+
+        await prisma.employee.create({
+            data: {
+                name,
+                role,
+                email: email || null,
+                phone: phone || null,
+                phone: phone || null,
+                whatsapp: whatsapp || null,
+                telegram: telegram || null,
+                instagram: instagram || null,
+                snapchat: snapchat || null,
+                address: address || null,
+                username: username || null,
+                password: hashedPassword,
+                status: "Active",
+            },
+        });
+
+        await logActivity("CREATE_EMPLOYEE", `Added new employee: ${name} (${role})`);
+        revalidatePath("/employees");
+        return { message: "Employee added successfully!" };
+    } catch (e) {
+        console.error(e);
+        return { message: "Failed to create employee." };
+    }
+}
+
+export async function updateEmployee(id: string, prevState: { message: string } | undefined, formData: FormData) {
+    try {
+        const rawData = Object.fromEntries(formData.entries());
+        const validatedFields = EmployeeSchema.safeParse(rawData);
+
+        if (!validatedFields.success) {
+            return { message: "Validation failed: " + validatedFields.error.errors[0].message };
+        }
+
+        const { name, role, email, phone, whatsapp, telegram, instagram, snapchat, address, username, password } = validatedFields.data;
+
+        const data: {
+            name: string;
+            role: string;
+            email: string | null;
+            phone: string | null;
+            whatsapp: string | null;
+            telegram: string | null;
+            instagram: string | null;
+            snapchat: string | null;
+            address: string | null;
+            username: string | null;
+            password?: string;
+        } = {
+            name,
+            role,
+            email: email || null,
+            phone: phone || null,
+            whatsapp: whatsapp || null,
+            telegram: telegram || null,
+            instagram: instagram || null,
+            snapchat: snapchat || null,
+            address: address || null,
+            username: username || null,
+        };
+
+        if (password && password.trim() !== "") {
+            data.password = await bcrypt.hash(password, 10);
+        }
+
+        await prisma.employee.update({
+            where: { id },
+            data,
+        });
+
+        await logActivity("UPDATE_EMPLOYEE", `Updated employee profile: ${name}`);
+        revalidatePath("/employees");
+        return { message: "Employee updated successfully!" };
+    } catch (e) {
+        console.error(e);
+        return { message: "Failed to update employee." };
+    }
+}
+
+export async function toggleEmployeeStatus(id: string, currentStatus: string) {
+    try {
+        const newStatus = currentStatus === "Active" ? "Inactive" : "Active";
+        const employee = await prisma.employee.update({
+            where: { id },
+            data: { status: newStatus },
+        });
+
+        await logActivity("TOGGLE_EMPLOYEE", `Marked ${employee.name} as ${newStatus}`);
+        revalidatePath("/employees");
+        return { success: true, message: `Employee marked as ${newStatus}` };
+    } catch {
+        return { success: false, message: "Failed to update status" };
+    }
+}
+
+// --- PATIENT ACTIONS ---
+
+export async function createPatient(prevState: { message: string } | undefined, formData: FormData) {
+    try {
+        const session = await auth();
+        const rawData = Object.fromEntries(formData.entries());
+        const validatedFields = PatientSchema.safeParse(rawData);
+
+        if (!validatedFields.success) {
+            return { message: "Validation failed: " + validatedFields.error.errors[0].message };
+        }
+
+        const data = validatedFields.data;
+
+        await prisma.patient.create({
+            data: {
+                ...data,
+                email: data.email || null,
+                phone: data.phone || null,
+                whatsapp: data.whatsapp || null,
+                telegram: data.telegram || null,
+                instagram: data.instagram || null,
+                snapchat: data.snapchat || null,
+                facebook: data.facebook || null,
+                tiktok: data.tiktok || null,
+                address: data.address || null,
+                gender: data.gender || null,
+                birthDate: data.birthDate ? new Date(data.birthDate) : null,
+                status: data.status || "New",
+                followUpStatus: data.followUpStatus || null,
+                createdById: session?.user?.id || null,
+            },
+        });
+
+        await logActivity("CREATE_PATIENT", `Registered new patient: ${data.name}`);
+        revalidatePath("/patients");
+        revalidatePath("/dashboard");
+        return { message: "Patient added successfully!" };
+    } catch (e) {
+        console.error(e);
+        return { message: "Failed to create patient." };
+    }
+}
+
+export async function updatePatient(id: string, prevState: { message: string } | undefined, formData: FormData) {
+    try {
+        const session = await auth();
+        const userRole = session?.user?.role || session?.user?.userType;
+        const isAdmin = userRole === 'ADMIN';
+
+        const rawData = Object.fromEntries(formData.entries());
+        const validatedFields = PatientSchema.safeParse(rawData);
+
+        if (!validatedFields.success) {
+            return { message: "Validation failed: " + validatedFields.error.errors[0].message };
+        }
+
+        const data = validatedFields.data;
+
+        // Privacy check
+        if (!isAdmin) {
+            const existing = await prisma.patient.findUnique({ where: { id } });
+            if (existing && existing.createdById !== session?.user?.id) {
+                return { message: "Unauthorized: You can only edit your own patients." };
+            }
+        }
+
+        await prisma.patient.update({
+            where: { id },
+            data: {
+                ...data,
+                email: data.email || null,
+                phone: data.phone || null,
+                whatsapp: data.whatsapp || null,
+                telegram: data.telegram || null,
+                instagram: data.instagram || null,
+                snapchat: data.snapchat || null,
+                facebook: data.facebook || null,
+                tiktok: data.tiktok || null,
+                address: data.address || null,
+                gender: data.gender || null,
+                birthDate: data.birthDate ? new Date(data.birthDate) : null,
+                status: data.status || "New",
+                followUpStatus: data.followUpStatus || null,
+            },
+        });
+
+        await logActivity("UPDATE_PATIENT", `Updated patient records: ${data.name}`);
+        revalidatePath("/patients");
+        return { message: "Patient updated successfully!" };
+    } catch (e) {
+        console.error(e);
+        return { message: "Failed to update patient." };
+    }
+}
+
+export async function deletePatient(id: string) {
+    try {
+        const session = await auth();
+        const userRole = session?.user?.role || session?.user?.userType;
+        const isAdmin = userRole === 'ADMIN';
+
+        // Privacy check
+        if (!isAdmin) {
+            const existing = await prisma.patient.findUnique({ where: { id } });
+            if (existing && existing.createdById !== session?.user?.id) {
+                return { success: false, message: "Unauthorized: You can only delete your own patients." };
+            }
+        }
+
+        const patient = await prisma.patient.delete({
+            where: { id },
+        });
+
+        await logActivity("DELETE_PATIENT", `Deleted patient record: ${patient.name}`);
+        revalidatePath("/patients");
+        return { success: true, message: "Patient deleted successfully!" };
+    } catch (e) {
+        console.error(e);
+        return { success: false, message: "Failed to delete patient." };
+    }
+}
+export async function deleteEmployee(id: string) {
+    try {
+        const session = await auth();
+        const userRole = session?.user?.role;
+        const userType = session?.user?.userType;
+        const isAdmin = userType === "ADMIN" || userRole === "ADMIN";
+
+        if (!isAdmin) {
+            return { success: false, message: "Unauthorized: Only administrators can delete employees." };
+        }
+
+        const employee = await prisma.employee.delete({
+            where: { id },
+        });
+
+        await logActivity("DELETE_EMPLOYEE", `Deleted employee record: ${employee.name}`);
+        revalidatePath("/employees");
+        return { success: true, message: "Employee deleted successfully!" };
+    } catch (e) {
+        console.error(e);
+        return { success: false, message: "Failed to delete employee." };
+    }
+}
+
+// --- EXCEL IMPORT ACTION ---
+
+export async function importPatientsFromExcel(formData: FormData) {
+    try {
+        const session = await auth();
+        const file = formData.get("file") as File;
+
+        if (!file) {
+            return { success: false, message: "No file provided" };
+        }
+
+        // Read file as array buffer
+        const arrayBuffer = await file.arrayBuffer();
+        const buffer = Buffer.from(arrayBuffer);
+
+        // Dynamic import of xlsx to avoid bundling issues
+        const XLSX = await import("xlsx");
+        const workbook = XLSX.read(buffer, { type: "buffer" });
+        const sheetName = workbook.SheetNames[0];
+        const sheet = workbook.Sheets[sheetName];
+        const data = XLSX.utils.sheet_to_json(sheet);
+
+        const results = {
+            total: data.length,
+            success: 0,
+            failed: 0,
+            errors: [] as Array<{ row: number; name: string; error: string }>,
+        };
+
+        // Process each row
+        for (let i = 0; i < data.length; i++) {
+            const row = data[i] as Record<string, unknown>;
+            const rowNumber = i + 2; // +2 because Excel is 1-indexed and has header row
+
+            try {
+                // Validate required fields
+                const name = row.name || row.Name || row.الاسم || row.NAME;
+                if (!name || typeof name !== "string") {
+                    throw new Error("Name is required");
+                }
+
+                // Extract and validate optional fields
+                const type = (row.type || row.Type || row.النوع || "Individual") as string;
+                const phone = (row.phone || row.Phone || row.الهاتف || "") as string;
+                const email = (row.email || row.Email || row.الايميل || "") as string;
+                const whatsapp = (row.whatsapp || row.WhatsApp || row.واتساب || "") as string;
+                const address = (row.address || row.Address || row.العنوان || "") as string;
+                const gender = (row.gender || row.Gender || row.الجنس || "") as string;
+                const birthDate = row.birthDate || row.BirthDate || row.تاريخ_الميلاد || "";
+
+                // Validate with Zod schema
+                const validatedData = PatientSchema.parse({
+                    name,
+                    type: type === "Company" || type === "شركة" ? "Company" : "Individual",
+                    phone: phone || undefined,
+                    email: email || undefined,
+                    whatsapp: whatsapp || undefined,
+                    address: address || undefined,
+                    gender: gender || undefined,
+                    birthDate: birthDate ? String(birthDate) : undefined,
+                    status: "New",
+                });
+
+                // Create patient
+                await prisma.patient.create({
+                    data: {
+                        ...validatedData,
+                        email: validatedData.email || null,
+                        phone: validatedData.phone || null,
+                        whatsapp: validatedData.whatsapp || null,
+                        telegram: validatedData.telegram || null,
+                        instagram: validatedData.instagram || null,
+                        snapchat: validatedData.snapchat || null,
+                        facebook: validatedData.facebook || null,
+                        tiktok: validatedData.tiktok || null,
+                        address: validatedData.address || null,
+                        gender: validatedData.gender || null,
+                        birthDate: validatedData.birthDate ? new Date(validatedData.birthDate) : null,
+                        status: "New",
+                        followUpStatus: null,
+                        createdById: session?.user?.id || null,
+                    },
+                });
+
+                results.success++;
+            } catch (error) {
+                results.failed++;
+                const errorMessage = error instanceof Error ? error.message : "Unknown error";
+                results.errors.push({
+                    row: rowNumber,
+                    name: String(row.name || row.Name || row.الاسم || "Unknown"),
+                    error: errorMessage,
+                });
+            }
+        }
+
+        await logActivity("IMPORT_PATIENTS", `Imported ${results.success} patients from Excel (${results.failed} failed)`);
+        revalidatePath("/patients");
+        revalidatePath("/dashboard");
+
+        return {
+            success: true,
+            message: `Successfully imported ${results.success} out of ${results.total} patients`,
+            results,
+        };
+    } catch (e) {
+        console.error("Import error:", e);
+        return {
+            success: false,
+            message: e instanceof Error ? e.message : "Failed to import patients from Excel"
+        };
+    }
+}

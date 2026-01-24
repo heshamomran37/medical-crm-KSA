@@ -1,0 +1,132 @@
+@import "tailwindcss";
+
+@theme {
+  --color-primary: hsl(var(--primary));
+  --color-primary-foreground: hsl(var(--primary-foreground));
+  --color-secondary: hsl(var(--secondary));
+  --color-secondary-foreground: hsl(var(--secondary-foreground));
+  --color-accent: hsl(var(--accent));
+  --color-accent-foreground: hsl(var(--accent-foreground));
+  --color-background: hsl(var(--background));
+  --color-foreground: hsl(var(--foreground));
+  --color-border: hsl(var(--border));
+  --color-camel: oklch(0.65 0.15 75);
+}
+
+:root {
+  --background: 221 45% 98%;
+  /* Very Airy Medical Blue */
+  --foreground: 222 47% 11%;
+  --card: 0 0% 100%;
+  --card-foreground: 222 47% 11%;
+  --popover: 0 0% 100%;
+  --popover-foreground: 222 47% 11%;
+  --primary: 221 83% 24%;
+  /* Navy Blue */
+  --primary-foreground: 210 40% 98%;
+  --secondary: 221 45% 94%;
+  /* Soft Blue Tint */
+  --secondary-foreground: 222 47% 11.2%;
+  --muted: 221 30% 95%;
+  --muted-foreground: 215.4 16.3% 46.9%;
+  --accent: 33 43% 54%;
+  /* Camel */
+  --accent-foreground: 210 40% 98%;
+  --destructive: 0 84.2% 60.2%;
+  --destructive-foreground: 210 40% 98%;
+  --border: 221 30% 90%;
+  --input: 221 30% 90%;
+  --ring: 221 83% 24%;
+  --radius: 0.75rem;
+}
+
+/* We prioritize Light Mode for this "Prestigious" look, but maintain dark mode vars */
+.dark {
+  --background: 222 47% 4%;
+  --foreground: 210 40% 98%;
+  --card: 222 47% 6%;
+  --card-foreground: 210 40% 98%;
+  --primary: 221 83% 40%;
+  --accent: 33 43% 54%;
+}
+
+@layer base {
+
+  *,
+  ::after,
+  ::before,
+  ::backdrop,
+  ::file-selector-button {
+    border-color: hsl(var(--border));
+    border-width: 0;
+    border-style: solid;
+  }
+
+  body {
+    background-color: hsl(var(--background));
+    color: hsl(var(--foreground));
+    font-family: 'Inter', system-ui, sans-serif;
+  }
+
+  .font-arabic {
+    font-family: var(--font-arabic), sans-serif;
+  }
+}
+
+.camel-accent {
+  background-color: hsl(var(--accent));
+  color: hsl(var(--accent-foreground));
+}
+
+.navy-card {
+  background-color: hsl(var(--primary));
+  color: hsl(var(--primary-foreground));
+}
+
+.shadow-camel {
+  box-shadow: 0 10px 15px -3px rgba(183, 138, 93, 0.1), 0 4px 6px -2px rgba(183, 138, 93, 0.05);
+}
+
+@keyframes fade-up {
+  from {
+    opacity: 0;
+    transform: translateY(15px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-fade-up {
+  animation: fade-up 0.2s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+/* Medical Precision Grid System (Optimized for Visibility) */
+.bg-grid-white {
+  background-image: radial-gradient(circle, rgba(255, 255, 255, 0.1) 1px, transparent 1px);
+  background-size: 60px 60px;
+  /* Larger grid = fewer elements to render if tiled */
+}
+
+.bg-dot-blue {
+  background-image: radial-gradient(circle, rgba(10, 25, 47, 0.05) 1px, transparent 1px);
+  background-size: 24px 24px;
+}
+
+.bg-grid-medical {
+  background-image: linear-gradient(rgba(10, 25, 47, 0.03) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(10, 25, 47, 0.03) 1px, transparent 1px);
+  background-size: 50px 50px;
+}
+
+.mask-fade-out {
+  mask-image: radial-gradient(circle at center, black, transparent 80%);
+}
+
+.glass-morphism-medical {
+  background: rgba(255, 255, 255, 0.7);
+  backdrop-filter: blur(12px);
+  border: 1px border oklch(100% 0 0 / 0.1);
+}

@@ -1,0 +1,109 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id        String   @id @default(cuid())
+  username  String   @unique
+  password  String
+  role      String   @default("ADMIN")
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Employee {
+  id         String   @id @default(cuid())
+  name       String
+  role       String
+  status     String   @default("Active")
+  email      String?
+  phone      String?
+  whatsapp   String?
+  address    String?
+  department String?
+  telegram   String?
+  instagram  String?
+  snapchat   String?
+  username   String?  @unique
+  password   String?
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+
+  @@index([name])
+  @@index([phone])
+  @@index([status])
+}
+
+model Patient {
+  id             String    @id @default(cuid())
+  name           String
+  type           String    @default("Individual")
+  email          String?
+  phone          String?
+  whatsapp       String?
+  telegram       String?
+  instagram      String?
+  snapchat       String?
+  facebook       String?
+  tiktok         String?
+  address        String?
+  status         String    @default("New")
+  followUpStatus String?
+  createdAt      DateTime  @default(now())
+  updatedAt      DateTime  @updatedAt
+  birthDate      DateTime?
+  gender         String?
+  createdById    String?
+
+  whatsappMessages WhatsAppMessage[]
+
+  @@index([name])
+  @@index([phone])
+  @@index([status])
+  @@index([createdById])
+}
+
+model ActivityLog {
+  id          String   @id @default(cuid())
+  action      String
+  description String
+  userId      String?
+  createdAt   DateTime @default(now())
+
+  @@index([userId])
+}
+
+model WhatsAppMessage {
+  id            String   @id @default(cuid())
+  patientId     String?
+  senderPhone   String
+  senderName    String?
+  messageText   String   @db.Text
+  messageType   String   @default("text")
+  direction     String   // "incoming" or "outgoing"
+  status        String   @default("received") // "received", "read", "sent", "delivered"
+  timestamp     DateTime @default(now())
+  createdAt     DateTime @default(now())
+
+  patient Patient? @relation(fields: [patientId], references: [id], onDelete: Cascade)
+
+  @@index([patientId])
+  @@index([senderPhone])
+  @@index([timestamp])
+}
+
+model WhatsAppSession {
+  id            String   @id @default(cuid())
+  isConnected   Boolean  @default(false)
+  qrCode        String?  @db.Text
+  lastConnected DateTime?
+  phoneNumber   String?
+  updatedAt     DateTime @updatedAt
+  createdAt     DateTime @default(now())
+}
+
