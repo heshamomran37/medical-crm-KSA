@@ -16,9 +16,17 @@ export default async function ActivityPage() {
 }
 
 async function ActivityDataWrapper() {
-    await auth();
+    const session = await auth();
+    const userRole = session?.user?.role || session?.user?.userType;
+    const isAdmin = userRole === 'ADMIN';
+
+    const where: any = {};
+    if (!isAdmin && session?.user?.name) {
+        where.userId = session.user.name;
+    }
 
     const activities = await prisma.activityLog.findMany({
+        where,
         take: 20,
         orderBy: {
             createdAt: 'desc'
