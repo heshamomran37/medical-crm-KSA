@@ -42,6 +42,26 @@ const PatientSchema = z.object({
     followUpStatus: z.string().optional(),
 });
 
+const SaleSchema = z.object({
+    patientId: z.string().min(1, "Patient is required"),
+    gender: z.string().optional(),
+    cupsCount: z.coerce.number().int().nonnegative().default(0),
+    disease: z.string().optional(),
+    totalAmount: z.coerce.number().nonnegative().default(0),
+    cashAmount: z.coerce.number().nonnegative().default(0),
+    networkAmount: z.coerce.number().nonnegative().default(0),
+    offers: z.string().optional(),
+    notes: z.string().optional(),
+});
+
+const ExpenseSchema = z.object({
+    title: z.string().min(2, "Title is required"),
+    amount: z.coerce.number().positive("Amount must be positive"),
+    category: z.string().optional(),
+    notes: z.string().optional(),
+    date: z.string().optional(),
+});
+
 // --- HELPER: LOG ACTIVITY ---
 
 async function logActivity(action: string, description: string) {
@@ -465,5 +485,147 @@ export async function importPatientsFromExcel(formData: FormData) {
             success: false,
             message: e instanceof Error ? e.message : "Failed to import patients from Excel"
         };
+    }
+}
+
+// --- SALE ACTIONS ---
+
+export async function createSale(prevState: { message: string } | undefined, formData: FormData) {
+    try {
+        const session = await auth();
+        const rawData = Object.fromEntries(formData.entries());
+        const validatedFields = SaleSchema.safeParse(rawData);
+
+        if (!validatedFields.success) {
+            return { message: "Validation failed: " + validatedFields.error.errors[0].message };
+        }
+
+        const data = validatedFields.data;
+
+        await prisma.sale.create({
+            data: {
+                ...data,
+                createdById: session?.user?.id || null,
+            },
+        });
+
+        await logActivity("CREATE_SALE", `Recorded sale for patient ID: ${data.patientId}`);
+        revalidatePath("/sales");
+        revalidatePath("/dashboard");
+        return { message: "Sale recorded successfully!" };
+    } catch (e) {
+        console.error(e);
+        return { message: "Failed to record sale." };
+    }
+}
+
+export async function getSalesSummary(date?: Date) {
+    try {
+        const startOfDay = date ? new Date(date.setHours(0, 0, 0, 0)) : new Date(new Date().setHours(0, 0, 0, 0));
+        const endOfDay = new Date(startOfDay);
+        endOfDay.setHours(23, 59, 59, 999);
+
+        const sales = await prisma.sale.findMany({
+            where: {
+                createdAt: {
+                    gte: startOfDay,
+                    lte: endOfDay,
+                },
+            },
+            include: {
+                patient: {
+                    select: {
+                        name: true,
+                        phone: true,
+                    },
+                },
+            },
+            orderBy: { createdAt: 'desc' },
+        });
+
+        const totals = sales.reduce((acc: any, sale: any) => {
+            acc.total += sale.totalAmount;
+            acc.cash += sale.cashAmount;
+            acc.network += sale.networkAmount;
+            if (sale.gender === 'Male') acc.men++;
+            if (sale.gender === 'Female') acc.women++;
+            return acc;
+        }, { total: 0, cash: 0, network: 0, men: 0, women: 0 });
+
+        return { sales, totals };
+    } catch (e) {
+        console.error(e);
+        return { sales: [], totals: { total: 0, cash: 0, network: 0, men: 0, women: 0 } };
+    }
+}
+
+// --- EXPENSE ACTIONS ---
+
+export async function createExpense(prevState: { message: string } | undefined, formData: FormData) {
+    try {
+        const session = await auth();
+        const rawData = Object.fromEntries(formData.entries());
+        const validatedFields = ExpenseSchema.safeParse(rawData);
+
+        if (!validatedFields.success) {
+            return { message: "Validation failed: " + validatedFields.error.errors[0].message };
+        }
+
+        const data = validatedFields.data;
+
+        await prisma.expense.create({
+            data: {
+                title: data.title,
+                amount: data.amount,
+                category: data.category || null,
+                notes: data.notes || null,
+                date: data.date ? new Date(data.date) : new Date(),
+                createdById: session?.user?.id || null,
+            },
+        });
+
+        await logActivity("CREATE_EXPENSE", `Added expense: ${data.title}`);
+        revalidatePath("/sales");
+        return { message: "Expense added successfully!" };
+    } catch (e) {
+        console.error(e);
+        return { message: "Failed to add expense." };
+    }
+}
+
+export async function getMonthlyFinancials(month?: number, year?: number) {
+    try {
+        const now = new Date();
+        const targetMonth = month ?? now.getMonth();
+        const targetYear = year ?? now.getFullYear();
+
+        const startDate = new Date(targetYear, targetMonth, 1);
+        const endDate = new Date(targetYear, targetMonth + 1, 0, 23, 59, 59, 999);
+
+        const [sales, expenses] = await Promise.all([
+            prisma.sale.findMany({
+                where: { createdAt: { gte: startDate, lte: endDate } }
+            }),
+            prisma.expense.findMany({
+                where: { date: { gte: startDate, lte: endDate } }
+            })
+        ]);
+
+        const totalSales = sales.reduce((sum: number, s: any) => sum + s.totalAmount, 0);
+        const totalExpenses = expenses.reduce((sum: number, e: any) => sum + e.amount, 0);
+
+        return {
+            totalSales,
+            totalExpenses,
+            netIncome: totalSales - totalExpenses,
+            salesCount: sales.length,
+            menCount: sales.filter((s: any) => s.gender === 'Male').length,
+            womenCount: sales.filter((s: any) => s.gender === 'Female').length,
+            cashTotal: sales.reduce((sum: number, s: any) => sum + s.cashAmount, 0),
+            networkTotal: sales.reduce((sum: number, s: any) => sum + s.networkAmount, 0),
+        };
+    } catch (e) {
+        console.error(e);
+        return { totalSales: 0, totalExpenses: 0, netIncome: 0, salesCount: 0, menCount: 0, womenCount: 0, cashTotal: 0, networkTotal: 0 };
     }
 }

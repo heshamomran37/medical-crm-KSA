@@ -24,6 +24,7 @@ const allMenuItems = [
     { icon: LayoutDashboard, label: "dashboard", href: "/dashboard", adminOnly: false },
     { icon: Stethoscope, label: "employees", href: "/employees", adminOnly: true },
     { icon: Users, label: "patients", href: "/patients", adminOnly: false },
+    { icon: LayoutDashboard, label: "sales", href: "/sales", adminOnly: false },
     { icon: DatabaseBackup, label: "backup_restore", href: "/backup", adminOnly: true },
     { icon: MessageCircle, label: "whatsapp", href: "/whatsapp", adminOnly: false },
     { icon: Activity, label: "activity", href: "/activity", adminOnly: false },

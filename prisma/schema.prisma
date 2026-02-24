@@ -61,6 +61,7 @@ model Patient {
   createdById    String?
 
   whatsappMessages WhatsAppMessage[]
+  sales            Sale[]
 
   @@index([name])
   @@index([phone])
@@ -105,5 +106,42 @@ model WhatsAppSession {
   phoneNumber   String?
   updatedAt     DateTime @updatedAt
   createdAt     DateTime @default(now())
+}
+
+model Sale {
+  id            String   @id @default(cuid())
+  patientId     String
+  gender        String?  // Copied from patient for reporting
+  cupsCount     Int      @default(0)
+  disease       String?  // المرض/الشكوى
+  totalAmount   Float    @default(0)
+  cashAmount    Float    @default(0)
+  networkAmount Float    @default(0) // الشبكة
+  offers        String?  // العروض
+  notes         String?  // ملاحظات
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+  createdById   String?
+
+  patient Patient @relation(fields: [patientId], references: [id], onDelete: Cascade)
+
+  @@index([patientId])
+  @@index([createdAt])
+  @@index([createdById])
+}
+
+model Expense {
+  id          String   @id @default(cuid())
+  title       String
+  amount      Float
+  category    String?  // Rent, Electricity, Supplies, etc.
+  notes       String?
+  date        DateTime @default(now())
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  createdById String?
+
+  @@index([date])
+  @@index([createdById])
 }
 
