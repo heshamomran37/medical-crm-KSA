@@ -52,6 +52,7 @@ const SaleSchema = z.object({
     networkAmount: z.coerce.number().nonnegative().default(0),
     offers: z.string().optional(),
     notes: z.string().optional(),
+    saleDate: z.string().optional(),
 });
 
 const ExpenseSchema = z.object({
@@ -504,7 +505,16 @@ export async function createSale(prevState: { message: string } | undefined, for
 
         await prisma.sale.create({
             data: {
-                ...data,
+                patientId: data.patientId,
+                gender: data.gender,
+                cupsCount: data.cupsCount,
+                disease: data.disease || null,
+                totalAmount: data.totalAmount,
+                cashAmount: data.cashAmount,
+                networkAmount: data.networkAmount,
+                offers: data.offers || null,
+                notes: data.notes || null,
+                saleDate: data.saleDate ? new Date(data.saleDate) : new Date(),
                 createdById: session?.user?.id || null,
             },
         });
@@ -516,6 +526,58 @@ export async function createSale(prevState: { message: string } | undefined, for
     } catch (e) {
         console.error(e);
         return { message: "Failed to record sale." };
+    }
+}
+
+export async function updateSale(id: string, prevState: { message: string } | undefined, formData: FormData) {
+    try {
+        const session = await auth();
+        const rawData = Object.fromEntries(formData.entries());
+        const validatedFields = SaleSchema.safeParse(rawData);
+
+        if (!validatedFields.success) {
+            return { message: "Validation failed: " + validatedFields.error.errors[0].message };
+        }
+
+        const data = validatedFields.data;
+
+        await prisma.sale.update({
+            where: { id },
+            data: {
+                cupsCount: data.cupsCount,
+                disease: data.disease || null,
+                totalAmount: data.totalAmount,
+                cashAmount: data.cashAmount,
+                networkAmount: data.networkAmount,
+                offers: data.offers || null,
+                notes: data.notes || null,
+                saleDate: data.saleDate ? new Date(data.saleDate) : new Date(),
+            },
+        });
+
+        await logActivity("UPDATE_SALE", `Updated sale record ID: ${id}`);
+        revalidatePath("/sales");
+        revalidatePath("/dashboard");
+        return { message: "Sale updated successfully!" };
+    } catch (e) {
+        console.error(e);
+        return { message: "Failed to update sale." };
+    }
+}
+
+export async function deleteSale(id: string) {
+    try {
+        const sale = await prisma.sale.delete({
+            where: { id },
+        });
+
+        await logActivity("DELETE_SALE", `Deleted sale record for patient ID: ${sale.patientId}`);
+        revalidatePath("/sales");
+        revalidatePath("/dashboard");
+        return { success: true, message: "Sale deleted successfully!" };
+    } catch (e) {
+        console.error(e);
+        return { success: false, message: "Failed to delete sale." };
     }
 }
 

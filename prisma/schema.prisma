@@ -119,6 +119,7 @@ model Sale {
   networkAmount Float    @default(0) // الشبكة
   offers        String?  // العروض
   notes         String?  // ملاحظات
+  saleDate      DateTime? // تاريخ ووقت البيع (اختياري)
   createdAt     DateTime @default(now())
   updatedAt     DateTime @updatedAt
   createdById   String?

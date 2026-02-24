@@ -14,6 +14,7 @@ import {
 import { useLanguage } from "@/context/LanguageContext";
 import { cn } from "@/lib/utils";
 import { AddSaleDialog } from "./AddSaleDialog";
+import { EditSaleDialog } from "./EditSaleDialog";
 import { ExpenseDialog } from "./ExpenseDialog";
 
 interface SalesPageClientProps {
@@ -128,6 +129,7 @@ export function SalesPageClient({ initialSales, initialTotals, monthlyStats, pat
                                 <th className="px-6 py-4">{t('total')}</th>
                                 <th className="px-6 py-4">{t('method') || "Method"}</th>
                                 <th className="px-6 py-4">{t('date')}</th>
+                                <th className="px-6 py-4 text-center">{t('actions') || "Actions"}</th>
                             </tr>
                         </thead>
                         <tbody className="divide-y divide-white/5">
@@ -158,8 +160,23 @@ export function SalesPageClient({ initialSales, initialTotals, monthlyStats, pat
                                             {sale.networkAmount > 0 && <span className="text-[10px] text-blue-500 font-bold flex items-center gap-1 uppercase tracking-tighter"><CreditCard size={10} /> {t('network')}: {sale.networkAmount}</span>}
                                         </div>
                                     </td>
-                                    <td className="px-6 py-4 text-slate-500 text-sm">
-                                        {new Date(sale.createdAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+                                    <td className="px-6 py-4 text-slate-500 text-[11px]">
+                                        <div className="flex flex-col">
+                                            <span className="text-slate-300 font-bold capitalize">
+                                                {new Date(sale.saleDate || sale.createdAt).toLocaleDateString('ar-SA', { weekday: 'long' })}
+                                            </span>
+                                            <span>
+                                                {new Date(sale.saleDate || sale.createdAt).toLocaleDateString('ar-SA', { year: 'numeric', month: '2-digit', day: '2-digit' })}
+                                            </span>
+                                            <span className="text-slate-500 text-[10px]">
+                                                {new Date(sale.saleDate || sale.createdAt).toLocaleTimeString('ar-SA', { hour: '2-digit', minute: '2-digit' })}
+                                            </span>
+                                        </div>
+                                    </td>
+                                    <td className="px-6 py-4 text-center">
+                                        <div className="flex justify-center">
+                                            <EditSaleDialog sale={sale} />
+                                        </div>
                                     </td>
                                 </tr>
                             ))}

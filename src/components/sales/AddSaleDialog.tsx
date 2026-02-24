@@ -3,11 +3,17 @@
 import { useState, useActionState, useEffect } from "react";
 import { useFormStatus } from "react-dom";
 import { createSale } from "@/lib/actions";
-import { Plus, X, Search, User } from "lucide-react";
+import { Plus, X, Search, User, Calendar } from "lucide-react";
 import { useLanguage } from "@/context/LanguageContext";
 import { cn } from "@/lib/utils";
 
 const initialState = { message: "" };
+
+function getCurrentDateTimeLocal() {
+    const now = new Date();
+    const pad = (n: number) => String(n).padStart(2, "0");
+    return `${now.getFullYear()}-${pad(now.getMonth() + 1)}-${pad(now.getDate())}T${pad(now.getHours())}:${pad(now.getMinutes())}`;
+}
 
 function SubmitButton() {
     const { pending } = useFormStatus();
@@ -31,11 +37,18 @@ export function AddSaleDialog({ patients }: { patients: any[] }) {
     const [searchQuery, setSearchQuery] = useState("");
     const [selectedPatient, setSelectedPatient] = useState<any>(null);
     const [showPatientList, setShowPatientList] = useState(false);
+    const [saleDateTime, setSaleDateTime] = useState(getCurrentDateTimeLocal());
 
     const filteredPatients = patients.filter(p =>
         p.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
         p.phone?.includes(searchQuery)
     ).slice(0, 5);
+
+    useEffect(() => {
+        if (isOpen) {
+            setSaleDateTime(getCurrentDateTimeLocal());
+        }
+    }, [isOpen]);
 
     useEffect(() => {
         if (state?.message === "Sale recorded successfully!") {
@@ -190,6 +203,28 @@ export function AddSaleDialog({ patients }: { patients: any[] }) {
                                     className="w-full h-12 px-4 rounded-2xl border border-white/5 bg-white/5 text-white focus:border-[#b78a5d]/50 outline-none"
                                     placeholder="Ex: Back pain"
                                 />
+                            </div>
+
+                            {/* Date / Time / Day */}
+                            <div className="space-y-2">
+                                <label className="text-[10px] font-black uppercase tracking-widest text-[#b78a5d] ml-1 flex items-center gap-1">
+                                    <Calendar size={10} />
+                                    التاريخ والوقت
+                                </label>
+                                <div className="relative">
+                                    <input
+                                        type="datetime-local"
+                                        value={saleDateTime}
+                                        onChange={(e) => setSaleDateTime(e.target.value)}
+                                        className="w-full h-12 px-4 rounded-2xl border border-white/5 bg-white/5 text-white focus:border-[#b78a5d]/50 outline-none [color-scheme:dark]"
+                                    />
+                                    <input type="hidden" name="saleDate" value={saleDateTime} />
+                                </div>
+                                {saleDateTime && (
+                                    <p className="text-[10px] text-slate-400 ml-1">
+                                        اليوم: {new Date(saleDateTime).toLocaleDateString('ar-SA', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })}
+                                    </p>
+                                )}
                             </div>
 
                             <div className="grid grid-cols-2 gap-4">
