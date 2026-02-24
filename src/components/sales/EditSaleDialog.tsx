@@ -37,6 +37,10 @@ export function EditSaleDialog({ sale }: { sale: any }) {
             const pad = (n: number) => String(n).padStart(2, "0");
             const formatted = `${date.getFullYear()}-${pad(date.getMonth() + 1)}-${pad(date.getDate())}T${pad(date.getHours())}:${pad(date.getMinutes())}`;
             setSaleDateTime(formatted);
+
+            // Scroll lock
+            document.body.style.overflow = 'hidden';
+            return () => { document.body.style.overflow = 'auto'; };
         }
     }, [isOpen, sale]);
 
@@ -77,12 +81,13 @@ export function EditSaleDialog({ sale }: { sale: any }) {
 
                         {/* Decorative background glow */}
                         <div className="absolute -top-24 -left-24 w-48 h-48 bg-[#b78a5d]/10 blur-[100px] rounded-full pointer-events-none" />
+                        <div className="absolute -bottom-24 -right-24 w-48 h-48 bg-[#b78a5d]/5 blur-[100px] rounded-full pointer-events-none" />
 
-                        <div className="flex justify-between items-center mb-8">
-                            <div>
+                        <div className="flex justify-between items-start mb-8">
+                            <div className="flex-1">
                                 <h2 className="text-3xl font-serif italic text-white tracking-tight flex items-center gap-3">
                                     {t('edit_sale')}
-                                    <div className="h-px w-24 bg-gradient-to-r from-[#b78a5d]/50 to-transparent" />
+                                    <div className="h-px flex-1 bg-gradient-to-r from-[#b78a5d]/50 to-transparent ml-4" />
                                 </h2>
                                 <p className="text-slate-400 text-xs mt-2 uppercase tracking-[0.2em] font-medium opacity-70">Update Transaction Details</p>
                             </div>
@@ -108,7 +113,7 @@ export function EditSaleDialog({ sale }: { sale: any }) {
                             <input type="hidden" name="patientId" value={sale.patientId} />
                             <input type="hidden" name="gender" value={sale.gender || ""} />
                             <div className="space-y-2">
-                                <label className="text-[10px] font-black uppercase tracking-[0.2em] text-[#b78a5d] ml-1 flex items-center gap-2">
+                                <label className="text-[10px] font-black uppercase tracking-[0.2em] text-[#f59e0b] ml-1 flex items-center gap-2">
                                     <User size={10} />
                                     {t('patient_name')}
                                 </label>
@@ -119,7 +124,7 @@ export function EditSaleDialog({ sale }: { sale: any }) {
 
                             <div className="grid grid-cols-2 gap-6">
                                 <div className="space-y-2">
-                                    <label className="text-[10px] font-black uppercase tracking-[0.2em] text-[#b78a5d] ml-1">{t('cups_count')}</label>
+                                    <label className="text-[10px] font-black uppercase tracking-[0.2em] text-[#f59e0b] ml-1">{t('cups_count')}</label>
                                     <input
                                         name="cupsCount"
                                         type="number"
@@ -128,7 +133,7 @@ export function EditSaleDialog({ sale }: { sale: any }) {
                                     />
                                 </div>
                                 <div className="space-y-2">
-                                    <label className="text-[10px] font-black uppercase tracking-[0.2em] text-[#b78a5d] ml-1">{t('total_amount')}</label>
+                                    <label className="text-[10px] font-black uppercase tracking-[0.2em] text-[#f59e0b] ml-1">{t('total_amount')}</label>
                                     <div className="relative">
                                         <input
                                             name="totalAmount"
@@ -145,7 +150,7 @@ export function EditSaleDialog({ sale }: { sale: any }) {
 
                             <div className="grid grid-cols-2 gap-6">
                                 <div className="space-y-2">
-                                    <label className="text-[10px] font-black uppercase tracking-[0.2em] text-[#b78a5d] ml-1">{t('cash_amount')}</label>
+                                    <label className="text-[10px] font-black uppercase tracking-[0.2em] text-[#f59e0b] ml-1">{t('cash_amount')}</label>
                                     <input
                                         name="cashAmount"
                                         type="number"
@@ -155,7 +160,7 @@ export function EditSaleDialog({ sale }: { sale: any }) {
                                     />
                                 </div>
                                 <div className="space-y-2">
-                                    <label className="text-[10px] font-black uppercase tracking-[0.2em] text-[#b78a5d] ml-1">{t('network_amount')}</label>
+                                    <label className="text-[10px] font-black uppercase tracking-[0.2em] text-[#f59e0b] ml-1">{t('network_amount')}</label>
                                     <input
                                         name="networkAmount"
                                         type="number"
@@ -167,7 +172,7 @@ export function EditSaleDialog({ sale }: { sale: any }) {
                             </div>
 
                             <div className="space-y-2">
-                                <label className="text-[10px] font-black uppercase tracking-[0.2em] text-[#b78a5d] ml-1">{t('disease_complaint')}</label>
+                                <label className="text-[10px] font-black uppercase tracking-[0.2em] text-[#f59e0b] ml-1">{t('disease_complaint')}</label>
                                 <input
                                     name="disease"
                                     defaultValue={sale.disease || ""}
@@ -176,7 +181,7 @@ export function EditSaleDialog({ sale }: { sale: any }) {
                             </div>
 
                             <div className="space-y-2">
-                                <label className="text-[10px] font-black uppercase tracking-[0.2em] text-[#b78a5d] ml-1 flex items-center gap-2">
+                                <label className="text-[10px] font-black uppercase tracking-[0.2em] text-[#f59e0b] ml-1 flex items-center gap-2">
                                     <Calendar size={10} />
                                     {t('date_time') || "Date & Time"}
                                 </label>
@@ -201,7 +206,7 @@ export function EditSaleDialog({ sale }: { sale: any }) {
 
                             <div className="grid grid-cols-2 gap-6">
                                 <div className="space-y-2">
-                                    <label className="text-[10px] font-black uppercase tracking-[0.2em] text-[#b78a5d] ml-1">{t('offers_discounts')}</label>
+                                    <label className="text-[10px] font-black uppercase tracking-[0.2em] text-[#f59e0b] ml-1">{t('offers_discounts')}</label>
                                     <input
                                         name="offers"
                                         defaultValue={sale.offers || ""}
@@ -209,7 +214,7 @@ export function EditSaleDialog({ sale }: { sale: any }) {
                                     />
                                 </div>
                                 <div className="space-y-2">
-                                    <label className="text-[10px] font-black uppercase tracking-[0.2em] text-[#b78a5d] ml-1">{t('notes')}</label>
+                                    <label className="text-[10px] font-black uppercase tracking-[0.2em] text-[#f59e0b] ml-1">{t('notes')}</label>
                                     <input
                                         name="notes"
                                         defaultValue={sale.notes || ""}

@@ -1,5 +1,5 @@
 import { auth } from "@/auth";
-import { getSalesSummary, getMonthlyFinancials } from "@/lib/actions";
+import { getSalesSummary, getUnifiedAnalytics } from "@/lib/actions";
 import { SalesPageClient } from "@/components/sales/SalesPageClient";
 import { prisma } from "@/lib/prisma";
 import { redirect } from "next/navigation";
@@ -10,7 +10,7 @@ export default async function SalesPage() {
 
     // Fetch initial data
     const { sales, totals } = await getSalesSummary();
-    const monthlyStats = await getMonthlyFinancials();
+    const analytics = await getUnifiedAnalytics();
 
     // Fetch patients for the "Add Sale" dialog
     const patients = await prisma.patient.findMany({
@@ -27,7 +27,7 @@ export default async function SalesPage() {
         <SalesPageClient
             initialSales={sales}
             initialTotals={totals}
-            monthlyStats={monthlyStats}
+            analytics={analytics}
             patients={patients}
         />
     );

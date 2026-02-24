@@ -13,7 +13,7 @@ export function BackupRestoreButton() {
         <>
             <button
                 onClick={() => setIsOpen(true)}
-                className="flex items-center gap-2 px-4 h-10 rounded-xl border-2 border-[#0a192f] text-[#0a192f] hover:bg-[#0a192f] hover:text-white font-bold text-sm transition-all shadow-sm hover:shadow-md"
+                className="flex items-center gap-3 px-6 h-10 rounded-xl border border-white/10 bg-white/5 text-slate-300 hover:bg-[#b78a5d] hover:text-white font-bold text-sm transition-all shadow-xl"
             >
                 <Database size={18} />
                 {t('backup_restore')}

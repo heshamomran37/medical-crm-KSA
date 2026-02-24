@@ -34,8 +34,10 @@ export function EmployeesPageClient({ employees, totalPages, currentPage, query 
             <div className="flex flex-col gap-6" dir={isRTL ? "rtl" : "ltr"}>
                 <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
                     <div className={cn(isRTL && "text-right")}>
-                        <h1 className="text-3xl font-bold tracking-tight text-foreground">{t('employees_title')}</h1>
-                        <p className="text-muted-foreground mt-1">{t('employees_subtitle')}</p>
+                        <h1 className="text-4xl font-serif italic text-white flex items-center gap-3">
+                            {t('employees_title')}
+                        </h1>
+                        <p className="text-slate-400 mt-2 font-medium">{t('employees_subtitle')}</p>
                     </div>
                     <div className="flex items-center gap-3">
                         <BackupRestoreButton />
@@ -44,23 +46,23 @@ export function EmployeesPageClient({ employees, totalPages, currentPage, query 
                 </div>
 
                 {/* Filters */}
-                <div className="flex flex-wrap items-center gap-3 p-4 rounded-lg bg-card border border-border shadow-sm">
+                <div className="flex flex-wrap items-center gap-4 p-6 rounded-[2rem] bg-[#0a192f] border border-white/10 shadow-xl">
                     <form className="contents">
-                        <div className="relative flex-1 min-w-[200px]">
-                            <Search className={cn("absolute top-1/2 -translate-y-1/2 text-muted-foreground", isRTL ? "right-3" : "left-3")} size={16} />
+                        <div className="relative flex-1 min-w-[250px]">
+                            <Search className={cn("absolute top-1/2 -translate-y-1/2 text-slate-500", isRTL ? "right-4" : "left-4")} size={18} />
                             <input
                                 name="q"
                                 defaultValue={query}
                                 type="text"
                                 placeholder={t('search_employees')}
                                 className={cn(
-                                    "w-full h-9 rounded-md border border-input bg-transparent text-sm focus:outline-none focus:ring-2 focus:ring-primary/20",
-                                    isRTL ? "pr-9 pl-4" : "pl-9 pr-4"
+                                    "w-full h-12 rounded-xl border border-white/10 bg-white/5 text-white text-sm focus:outline-none focus:ring-2 focus:ring-[#f59e0b]/20 transition-all placeholder:text-slate-600",
+                                    isRTL ? "pr-12 pl-4" : "pl-12 pr-4"
                                 )}
                             />
                         </div>
-                        <button className="flex items-center gap-2 px-3 h-9 rounded-md border border-input bg-transparent text-sm hover:bg-secondary">
-                            <Filter size={16} />
+                        <button className="flex items-center gap-2 px-6 h-12 rounded-xl border border-white/10 bg-white/5 text-white text-sm font-bold hover:bg-[#b78a5d] hover:border-[#b78a5d] transition-all">
+                            <Filter size={18} />
                             {t('apply')}
                         </button>
                     </form>
@@ -74,15 +76,16 @@ export function EmployeesPageClient({ employees, totalPages, currentPage, query 
                         </div>
                     ) : (
                         employees.map((emp) => (
-                            <div key={emp.id} className="relative group flex flex-col p-5 rounded-lg bg-card border border-border hover:shadow-lg transition-all duration-200">
-                                <div className="flex items-start justify-between mb-4">
-                                    <div className="flex items-center gap-3">
-                                        <div className="w-12 h-12 rounded-full bg-primary/10 text-primary flex items-center justify-center text-lg font-bold">
+                            <div key={emp.id} className="relative group flex flex-col p-6 rounded-[2rem] bg-[#0a192f] border border-white/10 hover:border-[#b78a5d]/30 shadow-xl transition-all duration-300 overflow-hidden">
+                                <div className="absolute inset-0 bg-gradient-to-b from-white/[0.02] to-transparent pointer-events-none" />
+                                <div className="flex items-start justify-between mb-6 relative">
+                                    <div className="flex items-center gap-4">
+                                        <div className="w-14 h-14 rounded-2xl bg-[#b78a5d]/10 text-[#b78a5d] flex items-center justify-center text-xl font-black font-serif italic border border-[#b78a5d]/20">
                                             {emp.name.split(' ').map(n => n[0]).join('').substring(0, 2)}
                                         </div>
                                         <div className={cn(isRTL && "text-right")}>
-                                            <h3 className="font-bold text-foreground truncate max-w-[180px]">{emp.name}</h3>
-                                            <p className="text-sm font-medium text-primary">{emp.role}</p>
+                                            <h3 className="text-lg font-serif italic text-white truncate max-w-[180px] drop-shadow-sm">{emp.name}</h3>
+                                            <p className="text-[10px] font-black uppercase tracking-[0.2em] text-[#b78a5d] mt-1">{emp.role}</p>
                                         </div>
                                     </div>
                                     <EmployeeActions employee={emp} />
@@ -118,30 +121,30 @@ export function EmployeesPageClient({ employees, totalPages, currentPage, query 
 
                                 {/* Login Credentials */}
                                 {emp.username && (
-                                    <div className="pt-4 mt-4 border-t border-border">
-                                        <div className={cn("text-xs font-semibold text-muted-foreground mb-2", isRTL && "text-right")}>
+                                    <div className="pt-6 mt-6 border-t border-white/10 relative">
+                                        <div className={cn("text-[9px] font-black uppercase tracking-[0.3em] text-slate-500 mb-3", isRTL && "text-right")}>
                                             {t('login_credentials')}
                                         </div>
-                                        <div className="space-y-1 text-sm bg-secondary/50 p-2 rounded">
-                                            <div className="flex items-center gap-2">
-                                                <span className="text-muted-foreground">{t('username')}:</span>
-                                                <span className="font-mono font-semibold" dir="ltr">{emp.username}</span>
+                                        <div className="space-y-2 text-xs bg-white/5 p-4 rounded-2xl border border-white/5">
+                                            <div className="flex items-center gap-3">
+                                                <span className="text-slate-400 font-bold uppercase tracking-tighter w-16">{t('username')}:</span>
+                                                <span className="text-white font-mono font-bold tracking-tight" dir="ltr">{emp.username}</span>
                                             </div>
-                                            <div className="flex items-center gap-2">
-                                                <span className="text-muted-foreground">{t('password')}:</span>
-                                                <span className="font-mono">••••••••</span>
+                                            <div className="flex items-center gap-3">
+                                                <span className="text-slate-400 font-bold uppercase tracking-tighter w-16">{t('password')}:</span>
+                                                <span className="text-slate-600 font-mono tracking-widest">••••••••</span>
                                             </div>
                                         </div>
                                     </div>
                                 )}
 
-                                <div className="mt-5 pt-4 border-t border-border flex items-center justify-between">
-                                    <span className="text-xs font-semibold px-2 py-1 rounded bg-secondary text-secondary-foreground">
+                                <div className="mt-6 pt-6 border-t border-white/10 flex items-center justify-between relative">
+                                    <span className="text-[10px] font-black uppercase tracking-widest px-3 py-1.5 rounded-lg bg-white/5 text-slate-400 border border-white/5">
                                         {emp.department || t('general_dept')}
                                     </span>
                                     <span className={cn(
-                                        "text-xs font-bold px-2 py-1 rounded-full",
-                                        emp.status === 'Active' ? 'bg-green-100 text-green-700' : 'bg-gray-100 text-gray-700'
+                                        "text-[10px] font-black uppercase tracking-widest px-3 py-1.5 rounded-full border shadow-sm",
+                                        emp.status === 'Active' ? 'bg-emerald-500/10 text-emerald-500 border-emerald-500/20' : 'bg-red-500/10 text-red-400 border-red-500/20'
                                     )}>
                                         {t(emp.status.toLowerCase())}
                                     </span>

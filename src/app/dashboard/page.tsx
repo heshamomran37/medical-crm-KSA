@@ -25,15 +25,18 @@ export default async function DashboardPage() {
 }
 
 async function DashboardDataWrapper({ isAdmin, userId }: { isAdmin: boolean, userId?: string }) {
-    const [totalPatients, activeEmployees] = await Promise.all([
+    const { getUnifiedAnalytics } = await import("@/lib/actions");
+
+    const [totalPatients, activeEmployees, analytics] = await Promise.all([
         prisma.patient.count({
             where: isAdmin ? {} : { createdById: userId }
         }),
-        prisma.employee.count({ where: { status: "Active" } })
+        prisma.employee.count({ where: { status: "Active" } }),
+        getUnifiedAnalytics()
     ]);
 
-    const appointmentsToday = 0;
-    const revenue = 0;
+    const appointmentsToday = analytics.todayCount;
+    const revenue = analytics.monthly;
 
     return (
         <DashboardContent
@@ -41,6 +44,7 @@ async function DashboardDataWrapper({ isAdmin, userId }: { isAdmin: boolean, use
             activeEmployees={activeEmployees}
             appointmentsToday={appointmentsToday}
             revenue={revenue}
+            analytics={analytics}
         />
     );
 }

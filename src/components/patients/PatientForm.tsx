@@ -49,7 +49,7 @@ export function PatientForm({ onSuccess, onComplete, initialPhone, initialWhatsA
     }, [state, onSuccess, onComplete, initialPhone, initialWhatsApp]);
 
     return (
-        <form action={formAction} className="space-y-8 max-w-4xl mx-auto bg-[#0a192f]/90 backdrop-blur-xl p-8 md:p-12 rounded-[2.5rem] border border-white/10 shadow-[0_0_50px_rgba(0,0,0,0.5)] relative overflow-hidden">
+        <form action={formAction} className="space-y-8 max-w-4xl mx-auto bg-[#0a192f] p-8 md:p-12 rounded-[2.5rem] border border-white/10 shadow-[0_0_50px_rgba(0,0,0,0.5)] relative overflow-hidden">
             {/* Decorative background glow */}
             <div className="absolute -top-24 -left-24 w-48 h-48 bg-[#b78a5d]/10 blur-[100px] rounded-full pointer-events-none" />
             <div className="absolute -bottom-24 -right-24 w-48 h-48 bg-[#b78a5d]/5 blur-[100px] rounded-full pointer-events-none" />
@@ -65,20 +65,20 @@ export function PatientForm({ onSuccess, onComplete, initialPhone, initialWhatsA
             <div className="grid grid-cols-1 md:grid-cols-2 gap-8 pt-4 relative z-10">
                 {/* Basic Info */}
                 <div className="space-y-2">
-                    <label className="text-[10px] font-black uppercase tracking-[0.2em] text-[#b78a5d] px-1">{t('full_name')} *</label>
+                    <label className="text-[10px] font-black uppercase tracking-[0.2em] text-[#f59e0b] px-1">{t('full_name')} *</label>
                     <input
                         name="name"
                         required
-                        className="w-full h-14 px-6 rounded-2xl border border-white/5 bg-white/5 text-white placeholder:text-slate-600 focus:border-[#b78a5d]/50 focus:bg-white/10 transition-all outline-none font-bold"
+                        className="w-full h-14 px-6 rounded-2xl border border-white/5 bg-white/5 text-white placeholder:text-slate-600 focus:border-[#f59e0b]/50 focus:bg-white/10 transition-all outline-none font-bold"
                         placeholder="e.g. Ahmed Mohamed"
                     />
                 </div>
                 <div className="space-y-2">
-                    <label className="text-[10px] font-black uppercase tracking-[0.2em] text-[#b78a5d] px-1">{t('patient_type')} *</label>
+                    <label className="text-[10px] font-black uppercase tracking-[0.2em] text-[#f59e0b] px-1">{t('patient_type')} *</label>
                     <select
                         name="type"
                         required
-                        className="w-full h-14 px-6 rounded-2xl border border-white/5 bg-white/5 text-white focus:border-[#b78a5d]/50 focus:bg-white/10 transition-all outline-none font-bold appearance-none [color-scheme:dark]"
+                        className="w-full h-14 px-6 rounded-2xl border border-white/5 bg-white/5 text-white focus:border-[#f59e0b]/50 focus:bg-white/10 transition-all outline-none font-bold appearance-none [color-scheme:dark]"
                     >
                         <option value="Individual">{t('individual')}</option>
                         <option value="Company">{t('company')}</option>
@@ -87,28 +87,28 @@ export function PatientForm({ onSuccess, onComplete, initialPhone, initialWhatsA
 
                 {/* Contact Info */}
                 <div className="space-y-2">
-                    <label className="text-[10px] font-black uppercase tracking-[0.2em] text-[#b78a5d] px-1">{t('phone_number')}</label>
+                    <label className="text-[10px] font-black uppercase tracking-[0.2em] text-[#f59e0b] px-1">{t('phone_number')}</label>
                     <input
                         name="phone"
                         type="tel"
                         dir="ltr"
                         defaultValue={initialPhone}
                         className={cn(
-                            "w-full h-14 px-6 rounded-2xl border border-white/5 bg-white/5 text-white placeholder:text-slate-600 focus:border-[#b78a5d]/50 focus:bg-white/10 transition-all outline-none font-bold",
+                            "w-full h-14 px-6 rounded-2xl border border-white/5 bg-white/5 text-white placeholder:text-slate-600 focus:border-[#f59e0b]/50 focus:bg-white/10 transition-all outline-none font-bold",
                             isRTL && "text-right"
                         )}
                         placeholder="+966 5x xxx xxxx"
                     />
                 </div>
                 <div className="space-y-2">
-                    <label className="text-[10px] font-black uppercase tracking-[0.2em] text-[#b78a5d] px-1">{t('whatsapp_number')}</label>
+                    <label className="text-[10px] font-black uppercase tracking-[0.2em] text-[#f59e0b] px-1">{t('whatsapp_number')}</label>
                     <input
                         name="whatsapp"
                         type="tel"
                         dir="ltr"
                         defaultValue={initialWhatsApp || initialPhone}
                         className={cn(
-                            "w-full h-14 px-6 rounded-2xl border border-white/5 bg-white/5 text-white placeholder:text-slate-600 focus:border-[#b78a5d]/50 focus:bg-white/10 transition-all outline-none font-bold",
+                            "w-full h-14 px-6 rounded-2xl border border-white/5 bg-white/5 text-white placeholder:text-slate-600 focus:border-[#f59e0b]/50 focus:bg-white/10 transition-all outline-none font-bold",
                             isRTL && "text-right"
                         )}
                         placeholder="+966 5x xxx xxxx"
@@ -117,13 +117,13 @@ export function PatientForm({ onSuccess, onComplete, initialPhone, initialWhatsA
             </div>
 
             <div className="space-y-2 relative z-10">
-                <label className="text-[10px] font-black uppercase tracking-[0.2em] text-[#b78a5d] px-1">{t('email_address')}</label>
+                <label className="text-[10px] font-black uppercase tracking-[0.2em] text-[#f59e0b] px-1">{t('email_address')}</label>
                 <input
                     name="email"
                     type="email"
                     dir="ltr"
                     className={cn(
-                        "w-full h-14 px-6 rounded-2xl border border-white/5 bg-white/5 text-white placeholder:text-slate-600 focus:border-[#b78a5d]/50 focus:bg-white/10 transition-all outline-none font-bold",
+                        "w-full h-14 px-6 rounded-2xl border border-white/5 bg-white/5 text-white placeholder:text-slate-600 focus:border-[#f59e0b]/50 focus:bg-white/10 transition-all outline-none font-bold",
                         isRTL && "text-right"
                     )}
                     placeholder="patient@medical.com"
@@ -154,8 +154,8 @@ export function PatientForm({ onSuccess, onComplete, initialPhone, initialWhatsA
                     <input name="tiktok" dir="ltr" className="w-full h-12 px-5 rounded-xl border border-white/5 bg-white/5 text-white text-xs font-bold focus:border-white/30 outline-none" placeholder="@username" />
                 </div>
                 <div className="space-y-2">
-                    <label className="text-[10px] font-black uppercase tracking-[0.2em] text-[#b78a5d] px-1">{t('gender')}</label>
-                    <select name="gender" className="w-full h-12 px-5 rounded-xl border border-white/5 bg-white/5 text-white text-xs font-bold appearance-none [color-scheme:dark] outline-none focus:border-[#b78a5d]/50">
+                    <label className="text-[10px] font-black uppercase tracking-[0.2em] text-[#f59e0b] px-1">{t('gender')}</label>
+                    <select name="gender" className="w-full h-12 px-5 rounded-xl border border-white/5 bg-white/5 text-white text-xs font-bold appearance-none [color-scheme:dark] outline-none focus:border-[#f59e0b]/50">
                         <option value="">{t('all_types')}</option>
                         <option value="Male">{t('male')}</option>
                         <option value="Female">{t('female')}</option>
@@ -165,12 +165,12 @@ export function PatientForm({ onSuccess, onComplete, initialPhone, initialWhatsA
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-8 relative z-10">
                 <div className="space-y-2">
-                    <label className="text-[10px] font-black uppercase tracking-[0.2em] text-[#b78a5d] px-1">{t('birth_date')}</label>
-                    <input name="birthDate" type="date" className="w-full h-14 px-6 rounded-2xl border border-white/5 bg-white/5 text-white focus:border-[#b78a5d]/50 focus:bg-white/10 outline-none font-bold [color-scheme:dark]" />
+                    <label className="text-[10px] font-black uppercase tracking-[0.2em] text-[#f59e0b] px-1">{t('birth_date')}</label>
+                    <input name="birthDate" type="date" className="w-full h-14 px-6 rounded-2xl border border-white/5 bg-white/5 text-white focus:border-[#f59e0b]/50 focus:bg-white/10 outline-none font-bold [color-scheme:dark]" />
                 </div>
                 <div className="space-y-2">
-                    <label className="text-[10px] font-black uppercase tracking-[0.2em] text-[#b78a5d] px-1">{t('status')}</label>
-                    <select name="status" className="w-full h-14 px-6 rounded-2xl border border-white/5 bg-white/5 text-white focus:border-[#b78a5d]/50 focus:bg-white/10 outline-none font-bold appearance-none [color-scheme:dark]">
+                    <label className="text-[10px] font-black uppercase tracking-[0.2em] text-[#f59e0b] px-1">{t('status')}</label>
+                    <select name="status" className="w-full h-14 px-6 rounded-2xl border border-white/5 bg-white/5 text-white focus:border-[#f59e0b]/50 focus:bg-white/10 outline-none font-bold appearance-none [color-scheme:dark]">
                         <option value="New">{t('new')}</option>
                         <option value="Admitted">{t('admitted')}</option>
                         <option value="Under Treatment">{t('under_treatment')}</option>
@@ -180,13 +180,13 @@ export function PatientForm({ onSuccess, onComplete, initialPhone, initialWhatsA
             </div>
 
             <div className="space-y-2 relative z-10">
-                <label className="text-[10px] font-black uppercase tracking-[0.2em] text-[#b78a5d] px-1">{t('address')}</label>
-                <textarea name="address" rows={2} className="w-full px-6 py-4 rounded-2xl border border-white/5 bg-white/5 text-white focus:border-[#b78a5d]/50 focus:bg-white/10 outline-none font-bold resize-none" />
+                <label className="text-[10px] font-black uppercase tracking-[0.2em] text-[#f59e0b] px-1">{t('address')}</label>
+                <textarea name="address" rows={2} className="w-full px-6 py-4 rounded-2xl border border-white/5 bg-white/5 text-white focus:border-[#f59e0b]/50 focus:bg-white/10 outline-none font-bold resize-none" />
             </div>
 
             <div className="space-y-2 relative z-10">
-                <label className="text-[10px] font-black uppercase tracking-[0.2em] text-[#b78a5d] px-1">{t('activity')}</label>
-                <textarea name="followUpStatus" rows={3} className="w-full px-6 py-4 rounded-2xl border border-white/5 bg-white/5 text-white focus:border-[#b78a5d]/50 focus:bg-white/10 outline-none font-bold resize-none" />
+                <label className="text-[10px] font-black uppercase tracking-[0.2em] text-[#f59e0b] px-1">{t('activity')}</label>
+                <textarea name="followUpStatus" rows={3} className="w-full px-6 py-4 rounded-2xl border border-white/5 bg-white/5 text-white focus:border-[#f59e0b]/50 focus:bg-white/10 outline-none font-bold resize-none" />
             </div>
 
             <div className="pt-6 relative z-10">

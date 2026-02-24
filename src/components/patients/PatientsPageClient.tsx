@@ -108,15 +108,15 @@ export function PatientsPageClient({ patients, query, type, totalPages, currentP
             <div className="flex flex-col gap-8">
                 <div className="flex flex-col md:flex-row md:items-center justify-between gap-6">
                     <div>
-                        <h1 className="text-4xl font-black tracking-tight text-[#0a192f] flex items-center gap-3">
+                        <h1 className="text-4xl font-black tracking-tight text-white flex items-center gap-3">
                             <User className="text-[#b78a5d]" size={36} />
                             {t('patients_title')}
                         </h1>
-                        <p className="text-slate-400 font-bold uppercase tracking-widest text-[10px] mt-1 pr-1">{t('patients_subtitle')}</p>
+                        <p className="text-slate-400 font-bold uppercase tracking-widest text-[10px] mt-1 pr-1 opacity-70">{t('patients_subtitle')}</p>
                     </div>
 
                     {/* Tab Navigation */}
-                    <div className="flex bg-white p-1 rounded-2xl border border-slate-100 shadow-sm w-fit">
+                    <div className="flex bg-[#0a192f] p-1 rounded-2xl border border-white/10 shadow-xl w-fit">
                         <button
                             onClick={() => setActiveTab('list')}
                             className={cn(
@@ -148,17 +148,17 @@ export function PatientsPageClient({ patients, query, type, totalPages, currentP
                 {activeTab === 'list' ? (
                     <>
                         {/* Filters */}
-                        <div className="flex flex-wrap items-center gap-3 p-4 rounded-3xl bg-white border border-slate-100 shadow-sm">
+                        <div className="flex flex-wrap items-center gap-3 p-4 rounded-3xl bg-[#0a192f] border border-white/10 shadow-xl">
                             <form className="contents">
                                 <div className="relative flex-1 min-w-[200px]">
-                                    <Search className={cn("absolute top-1/2 -translate-y-1/2 text-muted-foreground", isRTL ? "right-3" : "left-3")} size={16} />
+                                    <Search className={cn("absolute top-1/2 -translate-y-1/2 text-slate-500", isRTL ? "right-3" : "left-3")} size={16} />
                                     <input
                                         name="q"
                                         defaultValue={query}
                                         type="text"
                                         placeholder={t('search_patients')}
                                         className={cn(
-                                            "w-full h-11 rounded-2xl border border-slate-100 bg-slate-50/50 px-9 text-sm focus:outline-none focus:ring-4 focus:ring-primary/5 transition-all",
+                                            "w-full h-11 rounded-2xl border border-white/5 bg-white/5 px-9 text-sm text-white placeholder:text-slate-600 focus:outline-none focus:border-[#b78a5d]/50 transition-all",
                                             isRTL ? "pr-10 pl-4 text-right" : "pl-10 pr-4"
                                         )}
                                     />
@@ -166,13 +166,13 @@ export function PatientsPageClient({ patients, query, type, totalPages, currentP
                                 <select
                                     name="type"
                                     defaultValue={type}
-                                    className="h-11 px-4 rounded-2xl border border-slate-100 bg-slate-50/50 text-sm focus:outline-none focus:ring-4 focus:ring-primary/5 appearance-none min-w-[140px] font-bold text-slate-600"
+                                    className="h-11 px-4 rounded-2xl border border-white/5 bg-white/5 text-sm focus:outline-none focus:border-[#b78a5d]/50 appearance-none min-w-[140px] font-bold text-white [color-scheme:dark]"
                                 >
                                     <option value="">{t('all_types')}</option>
                                     <option value="Individual">{t('individual')}</option>
                                     <option value="Company">{t('company')}</option>
                                 </select>
-                                <button className="flex items-center gap-2 px-6 h-11 rounded-2xl bg-[#0a192f] text-white text-xs font-black uppercase tracking-widest hover:bg-[#112240] transition-all shadow-lg shadow-[#0a192f]/10">
+                                <button className="flex items-center gap-2 px-6 h-11 rounded-2xl bg-[#b78a5d] text-white text-xs font-black uppercase tracking-widest hover:bg-[#b78a5d]/90 transition-all shadow-lg shadow-[#b78a5d]/10">
                                     {t('apply')}
                                 </button>
                             </form>
@@ -202,25 +202,25 @@ export function PatientsPageClient({ patients, query, type, totalPages, currentP
                                     <div
                                         key={patient.id}
                                         onClick={() => setSelectedPatient(patient)}
-                                        className="bg-white rounded-3xl border border-slate-100 shadow-sm hover:shadow-camel transition-all duration-500 p-8 space-y-6 cursor-pointer group animate-fade-up relative overflow-hidden"
+                                        className="bg-[#0a192f] rounded-3xl border border-white/10 shadow-2xl hover:border-[#b78a5d]/50 transition-all duration-500 p-8 space-y-6 cursor-pointer group animate-fade-up relative overflow-hidden"
                                         style={{ animationDelay: `${idx * 0.05}s` }}
                                     >
                                         {/* Header */}
                                         <div className="flex items-start justify-between relative z-10">
                                             <div className="flex items-center gap-5">
                                                 <div className={`w-16 h-16 rounded-2xl flex items-center justify-center shadow-xl transition-all duration-500 group-hover:scale-105 ${patient.type === 'Company'
-                                                    ? 'bg-[#0a192f] text-[#b78a5d]'
-                                                    : 'bg-slate-50 text-[#0a192f]'
+                                                    ? 'bg-white/10 text-[#b78a5d]'
+                                                    : 'bg-white/5 text-[#b78a5d]'
                                                     }`}>
                                                     {patient.type === 'Company' ? <Building size={28} /> : <User size={28} />}
                                                 </div>
                                                 <div>
-                                                    <h3 className="text-xl font-serif italic text-[#0a192f] group-hover:text-[#b78a5d] transition-colors duration-300">{patient.name}</h3>
+                                                    <h3 className="text-xl font-serif italic text-white group-hover:text-[#b78a5d] transition-colors duration-300">{patient.name}</h3>
                                                     <span className={cn(
                                                         "inline-flex items-center px-3 py-1 rounded-full text-[9px] font-black uppercase tracking-[0.2em] border mt-2",
                                                         patient.type === 'Company'
-                                                            ? 'bg-[#0a192f] text-white border-transparent'
-                                                            : 'bg-slate-50 text-slate-500 border-slate-100'
+                                                            ? 'bg-[#b78a5d] text-white border-transparent'
+                                                            : 'bg-white/5 text-slate-400 border-white/10'
                                                     )}>
                                                         {t(patient.type.toLowerCase())}
                                                     </span>
@@ -230,18 +230,18 @@ export function PatientsPageClient({ patients, query, type, totalPages, currentP
                                         </div>
 
                                         {/* Contact Information */}
-                                        <div className="space-y-4 pt-6 relative z-10 border-t border-slate-50">
+                                        <div className="space-y-4 pt-6 relative z-10 border-t border-white/5">
                                             {patient.phone && (
-                                                <div className="flex items-center gap-4 text-slate-400 group-hover:text-[#0a192f] transition-all">
-                                                    <div className="w-10 h-10 rounded-xl bg-slate-50 flex items-center justify-center group-hover:bg-[#b78a5d]/10 group-hover:text-[#b78a5d]">
+                                                <div className="flex items-center gap-4 text-slate-400 group-hover:text-white transition-all">
+                                                    <div className="w-10 h-10 rounded-xl bg-white/5 flex items-center justify-center group-hover:bg-[#b78a5d]/10 group-hover:text-[#b78a5d]">
                                                         <Phone size={16} />
                                                     </div>
                                                     <span className="font-bold text-sm tracking-tight" dir="ltr">{patient.phone}</span>
                                                 </div>
                                             )}
                                             {patient.email && (
-                                                <div className="flex items-center gap-4 text-slate-400 group-hover:text-[#0a192f] transition-all">
-                                                    <div className="w-10 h-10 rounded-xl bg-slate-50 flex items-center justify-center group-hover:bg-[#b78a5d]/10 group-hover:text-[#b78a5d]">
+                                                <div className="flex items-center gap-4 text-slate-400 group-hover:text-white transition-all">
+                                                    <div className="w-10 h-10 rounded-xl bg-white/5 flex items-center justify-center group-hover:bg-[#b78a5d]/10 group-hover:text-[#b78a5d]">
                                                         <Mail size={16} />
                                                     </div>
                                                     <span className="truncate font-bold text-sm tracking-tight">{patient.email}</span>
@@ -254,9 +254,9 @@ export function PatientsPageClient({ patients, query, type, totalPages, currentP
                                             <div className="flex items-center justify-between">
                                                 <span className={cn(
                                                     "inline-flex items-center px-4 py-1.5 rounded-full text-[10px] font-black uppercase tracking-widest border",
-                                                    patient.status === 'Admitted' ? 'bg-green-50 text-green-700 border-green-200' :
-                                                        patient.status === 'New' ? 'bg-[#b78a5d]/10 text-[#b78a5d] border-[#b78a5d]/20' :
-                                                            'bg-slate-50 text-slate-500 border-slate-100'
+                                                    patient.status === 'Admitted' ? 'bg-green-500/10 text-green-400 border-green-500/20' :
+                                                        patient.status === 'New' ? 'bg-[#b78a5d]/10 text-[#f59e0b] border-[#b78a5d]/20' :
+                                                            'bg-white/5 text-slate-400 border-white/10'
                                                 )}>
                                                     {t(patient.status.toLowerCase())}
                                                 </span>
@@ -308,7 +308,7 @@ export function PatientsPageClient({ patients, query, type, totalPages, currentP
                                                         e.stopPropagation();
                                                         setViewPatient(patient);
                                                     }}
-                                                    className="h-12 px-6 rounded-2xl bg-[#0a192f] text-white hover:bg-[#112240] transition-all duration-300 flex items-center justify-center gap-2 text-xs font-black uppercase tracking-widest shadow-xl shadow-[#0a192f]/10"
+                                                    className="h-12 px-6 rounded-2xl bg-white/5 text-white hover:bg-white/10 transition-all duration-300 flex items-center justify-center gap-2 text-xs font-black uppercase tracking-widest border border-white/5"
                                                 >
                                                     {t('details')}
                                                 </button>
@@ -317,7 +317,7 @@ export function PatientsPageClient({ patients, query, type, totalPages, currentP
                                                         e.stopPropagation();
                                                         setPatientToDelete(patient);
                                                     }}
-                                                    className="w-12 h-12 rounded-2xl bg-red-50 hover:bg-red-600 text-red-600 hover:text-white border border-red-100 transition-all duration-300 flex items-center justify-center shadow-sm"
+                                                    className="w-12 h-12 rounded-2xl bg-red-500/10 hover:bg-red-600 text-red-500 hover:text-white border border-red-500/20 transition-all duration-300 flex items-center justify-center shadow-sm"
                                                 >
                                                     <Trash2 size={18} />
                                                 </button>
@@ -332,16 +332,16 @@ export function PatientsPageClient({ patients, query, type, totalPages, currentP
 
                         {/* Pagination */}
                         {totalPages > 1 && (
-                            <div className={cn("flex flex-col md:flex-row items-center justify-between gap-4 p-6 bg-white border border-slate-100 rounded-[2rem] shadow-sm mt-8", isRTL && "md:flex-row-reverse")}>
+                            <div className={cn("flex flex-col md:flex-row items-center justify-between gap-4 p-6 bg-[#0a192f] border border-white/10 rounded-[2rem] shadow-xl mt-8", isRTL && "md:flex-row-reverse")}>
                                 <div className="text-sm text-slate-400 font-bold uppercase tracking-widest text-[10px]">
-                                    {t('showing_page')} <span className="text-[#0a192f]">{currentPage}</span> {t('of')} <span className="text-[#0a192f]">{totalPages}</span>
+                                    {t('showing_page')} <span className="text-white">{currentPage}</span> {t('of')} <span className="text-white">{totalPages}</span>
                                 </div>
                                 <div className={cn("flex items-center gap-2", isRTL && "flex-row-reverse")}>
                                     <Link
                                         href={getPageLink(1)}
                                         className={cn(
-                                            "w-10 h-10 rounded-xl border border-slate-100 flex items-center justify-center transition-all duration-300",
-                                            currentPage === 1 ? "opacity-30 cursor-not-allowed pointer-events-none" : "hover:bg-slate-50 text-[#0a192f]"
+                                            "w-10 h-10 rounded-xl border border-white/10 flex items-center justify-center transition-all duration-300",
+                                            currentPage === 1 ? "opacity-30 cursor-not-allowed pointer-events-none" : "hover:bg-white/5 text-white"
                                         )}
                                     >
                                         <ChevronsLeft size={18} />
@@ -349,8 +349,8 @@ export function PatientsPageClient({ patients, query, type, totalPages, currentP
                                     <Link
                                         href={getPageLink(currentPage - 1)}
                                         className={cn(
-                                            "w-10 h-10 rounded-xl border border-slate-100 flex items-center justify-center transition-all duration-300",
-                                            currentPage === 1 ? "opacity-30 cursor-not-allowed pointer-events-none" : "hover:bg-slate-50 text-[#0a192f]"
+                                            "w-10 h-10 rounded-xl border border-white/10 flex items-center justify-center transition-all duration-300",
+                                            currentPage === 1 ? "opacity-30 cursor-not-allowed pointer-events-none" : "hover:bg-white/5 text-white"
                                         )}
                                     >
                                         <ChevronLeft size={18} />
@@ -377,7 +377,7 @@ export function PatientsPageClient({ patients, query, type, totalPages, currentP
                                                         "w-10 h-10 rounded-xl flex items-center justify-center text-xs font-black transition-all duration-300",
                                                         currentPage === pageNum
                                                             ? "bg-[#b78a5d] text-white shadow-lg shadow-[#b78a5d]/20 scale-105"
-                                                            : "border border-slate-100 hover:bg-slate-50 text-[#0a192f]"
+                                                            : "border border-white/10 hover:bg-white/5 text-white"
                                                     )}
                                                 >
                                                     {pageNum}
@@ -389,8 +389,8 @@ export function PatientsPageClient({ patients, query, type, totalPages, currentP
                                     <Link
                                         href={getPageLink(currentPage + 1)}
                                         className={cn(
-                                            "w-10 h-10 rounded-xl border border-slate-100 flex items-center justify-center transition-all duration-300",
-                                            currentPage === totalPages ? "opacity-30 cursor-not-allowed pointer-events-none" : "hover:bg-slate-50 text-[#0a192f]"
+                                            "w-10 h-10 rounded-xl border border-white/10 flex items-center justify-center transition-all duration-300",
+                                            currentPage === totalPages ? "opacity-30 cursor-not-allowed pointer-events-none" : "hover:bg-white/5 text-white"
                                         )}
                                     >
                                         <ChevronRight size={18} />
@@ -398,8 +398,8 @@ export function PatientsPageClient({ patients, query, type, totalPages, currentP
                                     <Link
                                         href={getPageLink(totalPages)}
                                         className={cn(
-                                            "w-10 h-10 rounded-xl border border-slate-100 flex items-center justify-center transition-all duration-300",
-                                            currentPage === totalPages ? "opacity-30 cursor-not-allowed pointer-events-none" : "hover:bg-slate-50 text-[#0a192f]"
+                                            "w-10 h-10 rounded-xl border border-white/10 flex items-center justify-center transition-all duration-300",
+                                            currentPage === totalPages ? "opacity-30 cursor-not-allowed pointer-events-none" : "hover:bg-white/5 text-white"
                                         )}
                                     >
                                         <ChevronsRight size={18} />
@@ -428,32 +428,32 @@ export function PatientsPageClient({ patients, query, type, totalPages, currentP
 
             {/* Delete Confirmation Dialog */}
             {patientToDelete && (
-                <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-black/50 animate-in fade-in duration-200">
-                    <div className="bg-white rounded-2xl shadow-2xl border border-slate-200 w-full max-w-md overflow-hidden animate-in zoom-in-95 duration-200">
-                        <div className="p-6">
-                            <div className="flex items-center gap-4 mb-4">
-                                <div className="w-12 h-12 rounded-full bg-red-100 flex items-center justify-center text-red-600">
-                                    <AlertTriangle size={24} />
+                <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm animate-in fade-in duration-200">
+                    <div className="bg-[#0a192f] rounded-3xl shadow-2xl border border-white/10 w-full max-w-md overflow-hidden animate-in zoom-in-95 duration-200">
+                        <div className="p-8">
+                            <div className="flex items-center gap-4 mb-6">
+                                <div className="w-14 h-14 rounded-2xl bg-red-500/10 flex items-center justify-center text-red-500">
+                                    <AlertTriangle size={28} />
                                 </div>
-                                <h3 className="text-xl font-bold text-slate-900">{t('confirm_delete')}</h3>
+                                <h3 className="text-2xl font-serif italic text-white">{t('confirm_delete')}</h3>
                             </div>
-                            <p className="text-slate-600 leading-relaxed">
+                            <p className="text-slate-400 leading-relaxed text-sm">
                                 {t('delete_patient_msg')}
                             </p>
-                            <div className="mt-2 p-3 bg-slate-50 rounded-xl border border-slate-100">
-                                <p className="text-sm font-bold text-slate-700">{patientToDelete.name}</p>
+                            <div className="mt-6 p-4 bg-white/5 rounded-2xl border border-white/5">
+                                <p className="text-sm font-bold text-white">{patientToDelete.name}</p>
                             </div>
                         </div>
-                        <div className="bg-slate-50 p-4 flex gap-3 justify-end">
+                        <div className="bg-black/20 p-6 flex gap-3 justify-end border-t border-white/5">
                             <button
                                 onClick={() => setPatientToDelete(null)}
-                                className="px-6 py-2.5 rounded-xl border border-slate-200 text-slate-600 font-bold text-sm hover:bg-white transition-all"
+                                className="px-6 py-3 rounded-xl border border-white/10 text-slate-400 font-bold text-xs uppercase tracking-widest hover:bg-white/5 transition-all"
                             >
                                 {t('cancel')}
                             </button>
                             <button
                                 onClick={handleDelete}
-                                className="px-6 py-2.5 rounded-xl bg-red-600 text-white font-bold text-sm hover:bg-red-700 shadow-lg shadow-red-200 transition-all"
+                                className="px-6 py-3 rounded-xl bg-red-600 text-white font-bold text-xs uppercase tracking-widest hover:bg-red-700 shadow-lg shadow-red-900/20 transition-all"
                             >
                                 {t('confirm')}
                             </button>

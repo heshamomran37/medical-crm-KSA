@@ -3,7 +3,7 @@
 import { useActionState, useEffect } from "react";
 import { useFormStatus } from "react-dom";
 import { updateEmployee } from "@/lib/actions";
-import { X, Save } from "lucide-react";
+import { X, Save, Edit } from "lucide-react";
 import { Employee } from "@prisma/client";
 import { useLanguage } from "@/context/LanguageContext";
 import { cn } from "@/lib/utils";
@@ -57,9 +57,9 @@ export function EditEmployeeDialog({ employee, isOpen, onClose }: EditEmployeeDi
     if (!isOpen) return null;
 
     return (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm animate-in fade-in duration-200">
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm animate-in fade-in duration-300">
             <div className={cn(
-                "bg-card w-full max-w-md p-6 rounded-xl border border-border shadow-lg relative animate-in zoom-in-95 duration-200 lg:max-w-lg max-h-[90vh] overflow-y-auto",
+                "bg-[#0a192f] w-full max-w-md p-8 rounded-[2rem] border border-white/10 shadow-2xl relative animate-in zoom-in-95 duration-300 lg:max-w-lg max-h-[90vh] overflow-y-auto",
                 isRTL && "text-right"
             )} dir={isRTL ? "rtl" : "ltr"}>
                 <button
@@ -71,62 +71,67 @@ export function EditEmployeeDialog({ employee, isOpen, onClose }: EditEmployeeDi
                 >
                     <X size={20} />
                 </button>
-                <h2 className="text-xl font-bold tracking-tight mb-4 text-foreground">{t('edit_employee')}</h2>
+                <h2 className="text-2xl font-serif italic text-white mb-6 flex items-center gap-3">
+                    <div className="p-2 rounded-lg bg-[#f59e0b]/10 text-[#f59e0b]">
+                        <Edit size={20} />
+                    </div>
+                    {t('edit_employee')}
+                </h2>
 
-                <form action={formAction} className="space-y-4">
+                <form action={formAction} className="space-y-6">
                     <div className="space-y-2">
-                        <label className="text-sm font-medium text-foreground">{t('full_name')}</label>
-                        <input name="name" defaultValue={employee.name} required className="w-full h-10 px-3 rounded-md border border-input bg-background/50 text-foreground" />
-                    </div>
-                    <div className="space-y-2">
-                        <label className="text-sm font-medium text-foreground">{t('role')}</label>
-                        <input name="role" defaultValue={employee.role} required className="w-full h-10 px-3 rounded-md border border-input bg-background/50 text-foreground" />
-                    </div>
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                        <div className="space-y-2">
-                            <label className="text-sm font-medium text-foreground">{t('email_address')}</label>
-                            <input name="email" defaultValue={employee.email || ""} type="email" dir="ltr" className={cn("w-full h-10 px-3 rounded-md border border-input bg-background/50 text-foreground", isRTL && "text-right")} />
-                        </div>
-                        <div className="space-y-2">
-                            <label className="text-sm font-medium text-foreground">{t('phone_number')}</label>
-                            <input name="phone" defaultValue={employee.phone || ""} dir="ltr" className={cn("w-full h-10 px-3 rounded-md border border-input bg-background/50 text-foreground", isRTL && "text-right")} />
-                        </div>
-                    </div>
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                        <div className="space-y-2">
-                            <label className="text-sm font-medium text-foreground">{t('whatsapp_number')}</label>
-                            <input name="whatsapp" defaultValue={employee.whatsapp || ""} dir="ltr" className={cn("w-full h-10 px-3 rounded-md border border-input bg-background/50 text-foreground", isRTL && "text-right")} />
-                        </div>
-                        <div className="space-y-2">
-                            <label className="text-sm font-medium text-foreground">Telegram</label>
-                            <input name="telegram" defaultValue={employee.telegram || ""} dir="ltr" className={cn("w-full h-10 px-3 rounded-md border border-input bg-background/50 text-foreground", isRTL && "text-right")} />
-                        </div>
-                    </div>
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                        <div className="space-y-2">
-                            <label className="text-sm font-medium text-foreground">Instagram</label>
-                            <input name="instagram" defaultValue={employee.instagram || ""} dir="ltr" className={cn("w-full h-10 px-3 rounded-md border border-input bg-background/50 text-foreground", isRTL && "text-right")} />
-                        </div>
-                        <div className="space-y-2">
-                            <label className="text-sm font-medium text-foreground">Snapchat</label>
-                            <input name="snapchat" defaultValue={employee.snapchat || ""} dir="ltr" className={cn("w-full h-10 px-3 rounded-md border border-input bg-background/50 text-foreground", isRTL && "text-right")} />
-                        </div>
+                        <label className="text-xs font-black uppercase tracking-widest text-[#f59e0b] px-1">{t('full_name')}</label>
+                        <input name="name" defaultValue={employee.name} required className="w-full h-12 px-4 rounded-xl border border-white/10 bg-white/5 text-white focus:outline-none focus:ring-2 focus:ring-[#f59e0b]/20 transition-all [color-scheme:dark]" />
                     </div>
                     <div className="space-y-2">
-                        <label className="text-sm font-medium text-foreground">{t('address')}</label>
-                        <textarea name="address" defaultValue={employee.address || ""} rows={1} className="w-full px-3 py-2 rounded-md border border-input bg-background/50 text-foreground min-h-[40px]" />
+                        <label className="text-xs font-black uppercase tracking-widest text-[#f59e0b] px-1">{t('role')}</label>
+                        <input name="role" defaultValue={employee.role} required className="w-full h-12 px-4 rounded-xl border border-white/10 bg-white/5 text-white focus:outline-none focus:ring-2 focus:ring-[#f59e0b]/20 transition-all [color-scheme:dark]" />
+                    </div>
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div className="space-y-2">
+                            <label className="text-xs font-black uppercase tracking-widest text-[#f59e0b] px-1">{t('email_address')}</label>
+                            <input name="email" defaultValue={employee.email || ""} type="email" dir="ltr" className={cn("w-full h-12 px-4 rounded-xl border border-white/10 bg-white/5 text-white focus:outline-none focus:ring-2 focus:ring-[#f59e0b]/20 transition-all [color-scheme:dark]", isRTL && "text-right")} />
+                        </div>
+                        <div className="space-y-2">
+                            <label className="text-xs font-black uppercase tracking-widest text-[#f59e0b] px-1">{t('phone_number')}</label>
+                            <input name="phone" defaultValue={employee.phone || ""} dir="ltr" className={cn("w-full h-12 px-4 rounded-xl border border-white/10 bg-white/5 text-white focus:outline-none focus:ring-2 focus:ring-[#f59e0b]/20 transition-all [color-scheme:dark]", isRTL && "text-right")} />
+                        </div>
+                    </div>
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div className="space-y-2">
+                            <label className="text-xs font-black uppercase tracking-widest text-[#f59e0b] px-1">{t('whatsapp_number')}</label>
+                            <input name="whatsapp" defaultValue={employee.whatsapp || ""} dir="ltr" className={cn("w-full h-12 px-4 rounded-xl border border-white/10 bg-white/5 text-white focus:outline-none focus:ring-2 focus:ring-[#f59e0b]/20 transition-all [color-scheme:dark]", isRTL && "text-right")} />
+                        </div>
+                        <div className="space-y-2">
+                            <label className="text-xs font-black uppercase tracking-widest text-[#f59e0b] px-1">Telegram</label>
+                            <input name="telegram" defaultValue={employee.telegram || ""} dir="ltr" className={cn("w-full h-12 px-4 rounded-xl border border-white/10 bg-white/5 text-white focus:outline-none focus:ring-2 focus:ring-[#f59e0b]/20 transition-all [color-scheme:dark]", isRTL && "text-right")} />
+                        </div>
+                    </div>
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div className="space-y-2">
+                            <label className="text-xs font-black uppercase tracking-widest text-[#f59e0b] px-1">Instagram</label>
+                            <input name="instagram" defaultValue={employee.instagram || ""} dir="ltr" className={cn("w-full h-12 px-4 rounded-xl border border-white/10 bg-white/5 text-white focus:outline-none focus:ring-2 focus:ring-[#f59e0b]/20 transition-all [color-scheme:dark]", isRTL && "text-right")} />
+                        </div>
+                        <div className="space-y-2">
+                            <label className="text-xs font-black uppercase tracking-widest text-[#f59e0b] px-1">Snapchat</label>
+                            <input name="snapchat" defaultValue={employee.snapchat || ""} dir="ltr" className={cn("w-full h-12 px-4 rounded-xl border border-white/10 bg-white/5 text-white focus:outline-none focus:ring-2 focus:ring-[#f59e0b]/20 transition-all [color-scheme:dark]", isRTL && "text-right")} />
+                        </div>
+                    </div>
+                    <div className="space-y-2">
+                        <label className="text-xs font-black uppercase tracking-widest text-[#f59e0b] px-1">{t('address')}</label>
+                        <textarea name="address" defaultValue={employee.address || ""} rows={1} className="w-full px-4 py-3 rounded-xl border border-white/10 bg-white/5 text-white focus:outline-none focus:ring-2 focus:ring-[#f59e0b]/20 transition-all min-h-[50px] [color-scheme:dark]" />
                     </div>
 
-                    <div className="border-t border-border pt-4 mt-2">
-                        <h3 className="text-sm font-semibold mb-3 text-foreground">{t('login_credentials')}</h3>
-                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div className="border-t border-white/10 pt-6 mt-4">
+                        <h3 className="text-xs font-black uppercase tracking-[0.2em] text-slate-500 mb-4 px-1">{t('login_credentials')}</h3>
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                             <div className="space-y-2">
-                                <label className="text-sm font-medium text-foreground">{t('username')}</label>
-                                <input name="username" defaultValue={employee.username || ""} required dir="ltr" className={cn("w-full h-10 px-3 rounded-md border border-input bg-background/50 text-foreground", isRTL && "text-right")} />
+                                <label className="text-xs font-black uppercase tracking-widest text-[#f59e0b] px-1">{t('username')}</label>
+                                <input name="username" defaultValue={employee.username || ""} required dir="ltr" className={cn("w-full h-12 px-4 rounded-xl border border-white/10 bg-white/5 text-white focus:outline-none focus:ring-2 focus:ring-[#f59e0b]/20 transition-all [color-scheme:dark]", isRTL && "text-right")} />
                             </div>
                             <div className="space-y-2">
-                                <label className="text-sm font-medium text-foreground">{t('password')}</label>
-                                <input name="password" type="password" minLength={3} dir="ltr" className={cn("w-full h-10 px-3 rounded-md border border-input bg-background/50 text-foreground", isRTL && "text-right")} placeholder={t('save_changes')} />
+                                <label className="text-xs font-black uppercase tracking-widest text-[#f59e0b] px-1">{t('password')}</label>
+                                <input name="password" type="password" minLength={3} dir="ltr" className={cn("w-full h-12 px-4 rounded-xl border border-white/10 bg-white/5 text-white focus:outline-none focus:ring-2 focus:ring-[#f59e0b]/20 transition-all [color-scheme:dark]", isRTL && "text-right")} placeholder={t('save_changes')} />
                             </div>
                         </div>
                     </div>

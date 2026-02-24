@@ -14,7 +14,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
     return (
         <div
             className={cn(
-                "flex h-screen bg-[#f8fafc] relative overflow-hidden",
+                "flex h-screen bg-[#020617] relative overflow-hidden text-white",
                 isRTL && "font-arabic"
             )}
             dir={isRTL ? "rtl" : "ltr"}

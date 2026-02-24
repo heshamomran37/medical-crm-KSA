@@ -28,16 +28,19 @@ interface SalesPageClientProps {
         men: number;
         women: number;
     };
-    monthlyStats: {
-        totalSales: number;
-        totalExpenses: number;
-        netIncome: number;
+    analytics: {
+        daily: number;
+        weekly: number;
+        monthly: number;
+        expenses: number;
+        net: number;
         salesCount: number;
+        todayCount: number;
     };
     patients: any[];
 }
 
-export function SalesPageClient({ initialSales, initialTotals, monthlyStats, patients }: SalesPageClientProps) {
+export function SalesPageClient({ initialSales, initialTotals, analytics, patients }: SalesPageClientProps) {
     const { t, isRTL } = useLanguage();
     const [view, setView] = useState<'daily' | 'monthly'>('daily');
 
@@ -61,23 +64,23 @@ export function SalesPageClient({ initialSales, initialTotals, monthlyStats, pat
             {/* Quick Stats Grid */}
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
                 <StatCard
-                    title={t('today_total') || "Today's Total"}
-                    value={initialTotals.total}
+                    title={t('revenue_daily')}
+                    value={analytics.daily}
                     icon={DollarSign}
                     color="bg-emerald-500/10 text-emerald-500"
                     isCurrency
                 />
                 <StatCard
-                    title={t('cash') || "Cash"}
-                    value={initialTotals.cash}
-                    icon={Wallet}
-                    color="bg-amber-500/10 text-amber-500"
+                    title={t('revenue_weekly')}
+                    value={analytics.weekly}
+                    icon={TrendingUp}
+                    color="bg-amber-500/10 text-[#b78a5d]"
                     isCurrency
                 />
                 <StatCard
-                    title={t('network') || "Network"}
-                    value={initialTotals.network}
-                    icon={CreditCard}
+                    title={t('revenue_monthly')}
+                    value={analytics.monthly}
+                    icon={Receipt}
                     color="bg-blue-500/10 text-blue-500"
                     isCurrency
                 />
@@ -100,27 +103,27 @@ export function SalesPageClient({ initialSales, initialTotals, monthlyStats, pat
             {/* Monthly Summary Bar */}
             <div className="bg-white/5 border border-white/10 rounded-3xl p-6 flex flex-wrap items-center justify-around gap-8">
                 <div className="text-center">
-                    <p className="text-slate-500 text-[10px] font-black uppercase tracking-widest">{t('monthly_revenue') || "Monthly Revenue"}</p>
-                    <p className="text-2xl font-serif italic text-white mt-1">{monthlyStats.totalSales.toLocaleString()} <span className="text-xs">SAR</span></p>
+                    <p className="text-slate-500 text-[10px] font-black uppercase tracking-widest">{t('monthly_revenue')}</p>
+                    <p className="text-2xl font-serif italic text-white mt-1">{analytics.monthly.toLocaleString()} <span className="text-xs">SAR</span></p>
                 </div>
                 <div className="h-10 w-px bg-white/10 hidden md:block" />
                 <div className="text-center">
-                    <p className="text-slate-500 text-[10px] font-black uppercase tracking-widest">{t('monthly_expenses') || "Monthly Expenses"}</p>
-                    <p className="text-2xl font-serif italic text-red-400 mt-1">{monthlyStats.totalExpenses.toLocaleString()} <span className="text-xs">SAR</span></p>
+                    <p className="text-slate-500 text-[10px] font-black uppercase tracking-widest">{t('monthly_expenses')}</p>
+                    <p className="text-2xl font-serif italic text-red-400 mt-1">{analytics.expenses.toLocaleString()} <span className="text-xs">SAR</span></p>
                 </div>
                 <div className="h-10 w-px bg-white/10 hidden md:block" />
                 <div className="text-center">
-                    <p className="text-slate-500 text-[10px] font-black uppercase tracking-widest">{t('net_income') || "Net Income"}</p>
-                    <p className="text-2xl font-serif italic text-emerald-400 mt-1">{monthlyStats.netIncome.toLocaleString()} <span className="text-xs">SAR</span></p>
+                    <p className="text-slate-500 text-[10px] font-black uppercase tracking-widest">{t('net_income')}</p>
+                    <p className="text-2xl font-serif italic text-emerald-400 mt-1">{analytics.net.toLocaleString()} <span className="text-xs">SAR</span></p>
                 </div>
             </div>
 
             {/* Sales Table */}
-            <div className="relative group/table overflow-hidden rounded-[2rem] border border-white/10 bg-[#0a192f]/50 backdrop-blur-xl shadow-2xl">
+            <div className="relative group/table overflow-hidden rounded-[2rem] border border-white/10 bg-[#0a192f] shadow-2xl">
                 <div className="absolute inset-0 bg-gradient-to-b from-white/[0.02] to-transparent pointer-events-none" />
                 <div className="overflow-x-auto">
-                    <table className="w-full text-left" dir={isRTL ? "rtl" : "ltr"}>
-                        <thead className="bg-white/10 text-[11px] font-black uppercase tracking-[0.2em] text-[#d4a87a] border-b border-white/20">
+                    <table className="w-full text-left border-collapse" dir={isRTL ? "rtl" : "ltr"}>
+                        <thead className="bg-[#0f172a] text-[11px] font-black uppercase tracking-[0.2em] text-white border-b border-white/10">
                             <tr>
                                 <th className="px-8 py-6">{t('patient_name')}</th>
                                 <th className="px-6 py-6 text-center">{t('gender')}</th>
@@ -134,7 +137,7 @@ export function SalesPageClient({ initialSales, initialTotals, monthlyStats, pat
                         </thead>
                         <tbody className="divide-y divide-white/10">
                             {initialSales.map((sale) => (
-                                <tr key={sale.id} className="hover:bg-white/[0.05] transition-all group/row border-transparent">
+                                <tr key={sale.id} className="hover:bg-white/[0.05] even:bg-white/[0.02] transition-all group/row border-transparent">
                                     <td className="px-8 py-5">
                                         <div className="flex flex-col">
                                             <span className="text-white font-bold tracking-tight text-sm group-hover/row:text-[#b78a5d] transition-colors">{sale.patient.name}</span>

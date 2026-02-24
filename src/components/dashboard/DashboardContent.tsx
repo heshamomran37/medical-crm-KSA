@@ -4,22 +4,31 @@ import React from 'react';
 import { Users, UserPlus, FileText, TrendingUp, PlusCircle, Activity } from "lucide-react";
 import Link from "next/link";
 import { useLanguage } from "@/context/LanguageContext";
+import { cn } from "@/lib/utils";
 
 interface DashboardContentProps {
     totalPatients: number;
     activeEmployees: number;
     appointmentsToday: number;
     revenue: number;
+    analytics?: {
+        daily: number;
+        weekly: number;
+        monthly: number;
+        expenses: number;
+        net: number;
+    };
 }
 
-export default function DashboardContent({ totalPatients, activeEmployees, appointmentsToday, revenue }: DashboardContentProps) {
+export default function DashboardContent({ totalPatients, activeEmployees, appointmentsToday, revenue, analytics }: DashboardContentProps) {
     const { t } = useLanguage();
 
     const stats = [
         { label: "total_patients", value: totalPatients.toString(), change: "Initial", icon: Users },
         { label: "active_employees", value: activeEmployees.toString(), change: "Initial", icon: UserPlus },
-        { label: "appointments_today", value: appointmentsToday.toString(), change: "Initial", icon: FileText },
-        { label: "revenue_monthly", value: `$${revenue}`, change: "Initial", icon: TrendingUp },
+        { label: "revenue_daily", value: `${analytics?.daily || 0} SAR`, change: "Today", icon: Activity, color: "text-emerald-500" },
+        { label: "revenue_weekly", value: `${analytics?.weekly || 0} SAR`, change: "7 Days", icon: TrendingUp, color: "text-[#b78a5d]" },
+        { label: "revenue_monthly", value: `${analytics?.monthly || 0} SAR`, change: "30 Days", icon: FileText, color: "text-amber-500" },
     ];
 
     const hasData = totalPatients > 0 || activeEmployees > 0;
@@ -35,22 +44,24 @@ export default function DashboardContent({ totalPatients, activeEmployees, appoi
                 </div>
             </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-                {stats.map((stat, idx) => (
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-6">
+                {stats.map((stat: any, idx) => (
                     <div
                         key={stat.label}
                         className="p-8 rounded-[2.5rem] bg-white border border-slate-100 shadow-sm hover:shadow-2xl hover:shadow-[#0a192f]/5 transition-all duration-500 group cursor-default relative overflow-hidden animate-fade-up"
                         style={{ animationDelay: `${idx * 0.1 + 0.2}s` }}
                     >
                         <div className="flex items-center justify-between mb-8">
-                            <div className="p-4 rounded-2xl bg-slate-50 text-[#0a192f] group-hover:bg-[#0a192f] group-hover:text-white transition-all duration-300 shadow-sm">
+                            <div className={cn("p-4 rounded-2xl bg-slate-50 transition-all duration-300 shadow-sm group-hover:bg-[#0a192f] group-hover:text-white", stat.color || "text-[#0a192f]")}>
                                 <stat.icon size={24} />
                             </div>
                             <span className="text-[10px] font-black uppercase text-slate-400 tracking-widest">{stat.change}</span>
                         </div>
                         <div>
                             <span className="text-[11px] font-black uppercase tracking-[0.25em] text-[#b78a5d] block mb-2">{t(stat.label)}</span>
-                            <span className="text-4xl font-serif italic text-[#0a192f]">{stat.value}</span>
+                            <span className={cn("text-3xl font-serif italic", stat.label.includes('revenue') ? "text-[#f59e0b]" : "text-[#0a192f]")}>
+                                {stat.value}
+                            </span>
                         </div>
                     </div>
                 ))}

@@ -42,7 +42,7 @@ export default function EmployeeActions({ employee }: { employee: Employee }) {
                     <>
                         <div className="fixed inset-0 z-10" onClick={() => setIsMenuOpen(false)}></div>
                         <div className={cn(
-                            "absolute top-full mt-2 w-48 bg-card border border-border rounded-lg shadow-lg z-20 py-1 animate-in fade-in zoom-in-95 duration-100",
+                            "absolute top-full mt-2 w-52 bg-[#0a192f] border border-white/20 rounded-2xl shadow-2xl z-20 py-2 animate-in fade-in zoom-in-95 duration-150 overflow-hidden",
                             isRTL ? "left-0" : "right-0"
                         )}>
                             <button
@@ -51,42 +51,42 @@ export default function EmployeeActions({ employee }: { employee: Employee }) {
                                     setIsMenuOpen(false);
                                 }}
                                 className={cn(
-                                    "w-full px-4 py-2.5 text-sm hover:bg-secondary flex items-center gap-2 text-foreground",
+                                    "w-full px-5 py-3 text-sm hover:bg-white/5 transition-colors flex items-center gap-3 text-white font-medium",
                                     isRTL ? "text-right flex-row-reverse" : "text-left"
                                 )}
                             >
-                                <Edit size={14} /> {t('edit_details')}
+                                <Edit size={16} className="text-[#f59e0b]" /> {t('edit_details')}
                             </button>
                             <button
                                 onClick={handleToggleStatus}
                                 className={cn(
-                                    "w-full px-4 py-2.5 text-sm hover:bg-secondary flex items-center gap-2",
+                                    "w-full px-5 py-3 text-sm hover:bg-white/5 transition-colors flex items-center gap-3 font-medium",
                                     isRTL ? "text-right flex-row-reverse" : "text-left",
-                                    employee.status === "Active" ? "text-red-500" : "text-green-600"
+                                    employee.status === "Active" ? "text-red-400" : "text-emerald-400"
                                 )}
                             >
                                 {employee.status === "Active" ? (
                                     <>
-                                        <Ban size={14} /> {t('disable_access')}
+                                        <Ban size={16} /> {t('disable_access')}
                                     </>
                                 ) : (
                                     <>
-                                        <CheckCircle size={14} /> {t('enable_access')}
+                                        <CheckCircle size={16} /> {t('enable_access')}
                                     </>
                                 )}
                             </button>
-                            <div className="border-t border-border my-1"></div>
+                            <div className="border-t border-white/10 my-1"></div>
                             <button
                                 onClick={() => {
                                     setIsDeleteConfirmOpen(true);
                                     setIsMenuOpen(false);
                                 }}
                                 className={cn(
-                                    "w-full px-4 py-2.5 text-sm hover:bg-red-50 text-red-600 flex items-center gap-2",
+                                    "w-full px-5 py-3 text-sm hover:bg-red-500/10 text-red-400 transition-colors flex items-center gap-3 font-medium",
                                     isRTL ? "text-right flex-row-reverse" : "text-left"
                                 )}
                             >
-                                <Trash2 size={14} /> {t('delete')}
+                                <Trash2 size={16} /> {t('delete')}
                             </button>
                         </div>
                     </>
@@ -101,29 +101,29 @@ export default function EmployeeActions({ employee }: { employee: Employee }) {
 
             {/* Delete Confirmation Dialog */}
             {isDeleteConfirmOpen && (
-                <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-black/50 animate-in fade-in duration-200">
-                    <div className="bg-white rounded-2xl shadow-2xl border border-slate-200 w-full max-w-md overflow-hidden animate-in zoom-in-95 duration-200">
-                        <div className="p-6">
-                            <div className="flex items-center gap-4 mb-4">
-                                <div className="w-12 h-12 rounded-full bg-red-100 flex items-center justify-center text-red-600">
-                                    <AlertTriangle size={24} />
+                <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-black/70 backdrop-blur-sm animate-in fade-in duration-300">
+                    <div className="bg-[#0a192f] rounded-[2rem] shadow-2xl border border-white/10 w-full max-w-md overflow-hidden animate-in zoom-in-95 duration-300">
+                        <div className="p-8">
+                            <div className="flex items-center gap-4 mb-6">
+                                <div className="w-14 h-14 rounded-2xl bg-red-500/10 flex items-center justify-center text-red-400 border border-red-500/20">
+                                    <AlertTriangle size={28} />
                                 </div>
-                                <h3 className="text-xl font-bold text-slate-900">{t('confirm_delete')}</h3>
+                                <h3 className="text-2xl font-serif italic text-white">{t('confirm_delete')}</h3>
                             </div>
-                            <p className="text-slate-600 leading-relaxed">
+                            <p className="text-slate-400 leading-relaxed font-medium">
                                 {t('delete_confirm_msg')}
                             </p>
                         </div>
-                        <div className="bg-slate-50 p-4 flex gap-3 justify-end">
+                        <div className="bg-white/5 p-6 flex gap-4 justify-end border-t border-white/10">
                             <button
                                 onClick={() => setIsDeleteConfirmOpen(false)}
-                                className="px-6 py-2.5 rounded-xl border border-slate-200 text-slate-600 font-bold text-sm hover:bg-white transition-all"
+                                className="px-8 py-3 rounded-xl border border-white/10 text-slate-300 font-bold text-sm hover:bg-white/5 transition-all"
                             >
                                 {t('cancel')}
                             </button>
                             <button
                                 onClick={handleDelete}
-                                className="px-6 py-2.5 rounded-xl bg-red-600 text-white font-bold text-sm hover:bg-red-700 shadow-lg shadow-red-200 transition-all"
+                                className="px-8 py-3 rounded-xl bg-red-600 text-white font-bold text-sm hover:bg-red-700 shadow-xl shadow-red-900/40 transition-all"
                             >
                                 {t('confirm')}
                             </button>

@@ -67,7 +67,7 @@ export function ExpenseDialog() {
 
                         <form action={formAction} className="space-y-6">
                             <div className="space-y-2">
-                                <label className="text-[10px] font-black uppercase tracking-widest text-[#b78a5d] ml-1">{t('expense_title')}</label>
+                                <label className="text-[10px] font-black uppercase tracking-[0.2em] text-[#f59e0b] ml-1">{t('expense_title')}</label>
                                 <input
                                     name="title"
                                     required
@@ -77,7 +77,7 @@ export function ExpenseDialog() {
                             </div>
 
                             <div className="space-y-2">
-                                <label className="text-[10px] font-black uppercase tracking-widest text-[#b78a5d] ml-1">{t('amount')}</label>
+                                <label className="text-[10px] font-black uppercase tracking-[0.2em] text-[#f59e0b] ml-1">{t('amount')}</label>
                                 <input
                                     name="amount"
                                     type="number"
@@ -88,10 +88,10 @@ export function ExpenseDialog() {
                             </div>
 
                             <div className="space-y-2">
-                                <label className="text-[10px] font-black uppercase tracking-widest text-[#b78a5d] ml-1">{t('category')}</label>
+                                <label className="text-[10px] font-black uppercase tracking-[0.2em] text-[#f59e0b] ml-1">{t('category')}</label>
                                 <select
                                     name="category"
-                                    className="w-full h-12 px-4 rounded-2xl border border-white/5 bg-[#0d213f] text-white focus:border-[#b78a5d]/50 outline-none appearance-none"
+                                    className="w-full h-12 px-4 rounded-2xl border border-white/5 bg-white/5 text-white focus:border-[#b78a5d]/50 outline-none appearance-none [color-scheme:dark]"
                                 >
                                     <option value="Supplies">{t('supplies')}</option>
                                     <option value="Rent">{t('rent')}</option>
@@ -101,12 +101,12 @@ export function ExpenseDialog() {
                             </div>
 
                             <div className="space-y-2">
-                                <label className="text-[10px] font-black uppercase tracking-widest text-[#b78a5d] ml-1">{t('date')}</label>
+                                <label className="text-[10px] font-black uppercase tracking-[0.2em] text-[#f59e0b] ml-1">{t('date')}</label>
                                 <input
                                     name="date"
                                     type="date"
                                     defaultValue={new Date().toISOString().split('T')[0]}
-                                    className="w-full h-12 px-4 rounded-2xl border border-white/5 bg-white/5 text-white focus:border-[#b78a5d]/50 outline-none"
+                                    className="w-full h-12 px-4 rounded-2xl border border-white/5 bg-white/5 text-white focus:border-[#b78a5d]/50 outline-none [color-scheme:dark]"
                                 />
                             </div>
 

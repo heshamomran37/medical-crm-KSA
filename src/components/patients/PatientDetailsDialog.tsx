@@ -37,13 +37,18 @@ export function PatientDetailsDialog({ patient, isOpen, onClose }: PatientDetail
     return (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm animate-in fade-in duration-200 p-4">
             <div className={cn(
-                "bg-white w-full max-w-2xl rounded-3xl border border-slate-100 shadow-2xl relative animate-in zoom-in-95 duration-200 max-h-[90vh] overflow-y-auto",
+                "bg-[#0a192f] w-full max-w-2xl rounded-[2.5rem] border border-white/10 shadow-[0_0_50px_rgba(0,0,0,0.5)] relative animate-in zoom-in-95 duration-200 max-h-[90vh] overflow-y-auto custom-scrollbar",
                 isRTL && "text-right"
             )} dir={isRTL ? "rtl" : "ltr"}>
 
+                {/* Decorative background glows */}
+                <div className="absolute -top-24 -left-24 w-48 h-48 bg-[#b78a5d]/10 blur-[100px] rounded-full pointer-events-none" />
+                <div className="absolute -bottom-24 -right-24 w-48 h-48 bg-[#b78a5d]/5 blur-[100px] rounded-full pointer-events-none" />
+
                 {/* Header Pattern */}
-                <div className="absolute top-0 inset-x-0 h-32 bg-[#0a192f] overflow-hidden">
-                    <div className="absolute inset-0 opacity-20" style={{ backgroundImage: 'radial-gradient(circle at 2px 2px, white 1px, transparent 0)', backgroundSize: '24px 24px' }}></div>
+                <div className="absolute top-0 inset-x-0 h-40 bg-[#0a192f]">
+                    <div className="absolute inset-0 bg-gradient-to-b from-white/[0.05] to-transparent pointer-events-none" />
+                    <div className="absolute inset-0 opacity-10" style={{ backgroundImage: 'radial-gradient(circle at 2px 2px, white 1px, transparent 0)', backgroundSize: '24px 24px' }}></div>
                 </div>
 
                 <button
@@ -60,25 +65,25 @@ export function PatientDetailsDialog({ patient, isOpen, onClose }: PatientDetail
                     {/* Profile Header */}
                     <div className="flex flex-col items-center gap-4 mb-8">
                         <div className={cn(
-                            "w-24 h-24 rounded-3xl flex items-center justify-center shadow-xl border-4 border-white text-3xl",
-                            patient.type === 'Company' ? 'bg-[#b78a5d] text-[#0a192f]' : 'bg-white text-[#0a192f]'
+                            "w-24 h-24 rounded-[2rem] flex items-center justify-center shadow-2xl border-4 border-[#0a192f] text-3xl transition-transform hover:scale-105 duration-500",
+                            patient.type === 'Company' ? 'bg-[#b78a5d] text-white' : 'bg-white/10 text-white'
                         )}>
                             {patient.type === 'Company' ? <Building size={40} /> : <User size={40} />}
                         </div>
                         <div className="text-center space-y-2">
-                            <h2 className="text-3xl font-serif font-bold text-[#0a192f]">{patient.name}</h2>
+                            <h2 className="text-3xl font-serif italic text-white tracking-tight">{patient.name}</h2>
                             <div className="flex items-center justify-center gap-2">
                                 <span className={cn(
-                                    "px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-widest border",
-                                    patient.type === 'Company' ? 'bg-[#0a192f] text-white border-transparent' : 'bg-slate-100 text-slate-600 border-slate-200'
+                                    "px-4 py-1.5 rounded-full text-[10px] font-black uppercase tracking-widest border",
+                                    patient.type === 'Company' ? 'bg-[#b78a5d] text-white border-transparent' : 'bg-white/5 text-slate-400 border-white/10'
                                 )}>
                                     {t(patient.type.toLowerCase())}
                                 </span>
                                 <span className={cn(
-                                    "px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-widest border",
-                                    patient.status === 'Admitted' ? 'bg-green-50 text-green-700 border-green-200' :
-                                        patient.status === 'New' ? 'bg-[#b78a5d]/10 text-[#b78a5d] border-[#b78a5d]/20' :
-                                            'bg-slate-50 text-slate-500 border-slate-100'
+                                    "px-4 py-1.5 rounded-full text-[10px] font-black uppercase tracking-widest border",
+                                    patient.status === 'Admitted' ? 'bg-green-500/10 text-green-400 border-green-500/20' :
+                                        patient.status === 'New' ? 'bg-[#b78a5d]/10 text-[#f59e0b] border-[#b78a5d]/20' :
+                                            'bg-white/5 text-slate-500 border-white/10'
                                 )}>
                                     {t(patient.status.toLowerCase())}
                                 </span>
@@ -91,13 +96,13 @@ export function PatientDetailsDialog({ patient, isOpen, onClose }: PatientDetail
 
                         {/* 1. Statistics / Quick Info */}
                         <div className="grid grid-cols-2 gap-4">
-                            <div className="bg-slate-50 rounded-2xl p-4 border border-slate-100 space-y-1 text-center">
-                                <span className="text-xs font-bold text-slate-400 uppercase tracking-widest">{t('gender')}</span>
-                                <p className="font-bold text-[#0a192f]">{patient.gender ? (patient.gender === 'Male' ? t('male') : t('female')) : '—'}</p>
+                            <div className="bg-white/5 rounded-2xl p-6 border border-white/5 space-y-1 text-center transition-all hover:bg-white/10">
+                                <span className="text-[10px] font-black text-[#f59e0b] uppercase tracking-[0.2em]">{t('gender')}</span>
+                                <p className="font-bold text-white text-lg">{patient.gender ? (patient.gender === 'Male' ? t('male') : t('female')) : '—'}</p>
                             </div>
-                            <div className="bg-slate-50 rounded-2xl p-4 border border-slate-100 space-y-1 text-center">
-                                <span className="text-xs font-bold text-slate-400 uppercase tracking-widest">{t('birth_date')}</span>
-                                <p className="font-bold text-[#0a192f]">
+                            <div className="bg-white/5 rounded-2xl p-6 border border-white/5 space-y-1 text-center transition-all hover:bg-white/10">
+                                <span className="text-[10px] font-black text-[#f59e0b] uppercase tracking-[0.2em]">{t('birth_date')}</span>
+                                <p className="font-bold text-white text-lg">
                                     {patient.birthDate ? new Date(patient.birthDate).toLocaleDateString(isRTL ? 'ar-EG' : 'en-US') : '—'}
                                 </p>
                             </div>
@@ -105,41 +110,41 @@ export function PatientDetailsDialog({ patient, isOpen, onClose }: PatientDetail
 
                         {/* 2. Contact Information */}
                         <div className="space-y-4">
-                            <h3 className="text-sm font-bold text-[#b78a5d] uppercase tracking-widest flex items-center gap-2">
-                                <span className="w-8 h-[2px] bg-[#b78a5d]"></span>
+                            <h3 className="text-[11px] font-black text-[#f59e0b] uppercase tracking-[0.2em] flex items-center gap-3">
+                                <span className="w-12 h-px bg-gradient-to-r from-[#f59e0b] to-transparent opacity-50"></span>
                                 {t('contact_info')}
                             </h3>
                             <div className="grid gap-3">
                                 {patient.phone && (
-                                    <div className="flex items-center gap-4 p-3 rounded-2xl bg-white border border-slate-100 hover:border-[#b78a5d]/50 transition-colors group">
-                                        <div className="w-10 h-10 rounded-xl bg-slate-50 flex items-center justify-center text-slate-400 group-hover:bg-[#b78a5d] group-hover:text-white transition-colors">
-                                            <Phone size={18} />
+                                    <div className="flex items-center gap-4 p-4 rounded-2xl bg-white/5 border border-white/5 hover:border-[#b78a5d]/30 transition-all group">
+                                        <div className="w-12 h-12 rounded-xl bg-white/5 flex items-center justify-center text-slate-400 group-hover:bg-[#b78a5d] group-hover:text-white transition-all">
+                                            <Phone size={20} />
                                         </div>
                                         <div className="flex-1">
-                                            <span className="text-xs text-slate-400 font-medium block">Phone</span>
-                                            <span className="text-sm font-bold text-[#0a192f]" dir="ltr">{patient.phone}</span>
+                                            <span className="text-[9px] text-slate-500 font-black uppercase tracking-widest block mb-1">Phone</span>
+                                            <span className="text-md font-bold text-white tracking-tight" dir="ltr">{patient.phone}</span>
                                         </div>
                                     </div>
                                 )}
                                 {patient.email && (
-                                    <div className="flex items-center gap-4 p-3 rounded-2xl bg-white border border-slate-100 hover:border-[#b78a5d]/50 transition-colors group">
-                                        <div className="w-10 h-10 rounded-xl bg-slate-50 flex items-center justify-center text-slate-400 group-hover:bg-[#b78a5d] group-hover:text-white transition-colors">
-                                            <Mail size={18} />
+                                    <div className="flex items-center gap-4 p-4 rounded-2xl bg-white/5 border border-white/5 hover:border-[#b78a5d]/30 transition-all group">
+                                        <div className="w-12 h-12 rounded-xl bg-white/5 flex items-center justify-center text-slate-400 group-hover:bg-[#b78a5d] group-hover:text-white transition-all">
+                                            <Mail size={20} />
                                         </div>
                                         <div className="flex-1">
-                                            <span className="text-xs text-slate-400 font-medium block">Email</span>
-                                            <span className="text-sm font-bold text-[#0a192f]">{patient.email}</span>
+                                            <span className="text-[9px] text-slate-500 font-black uppercase tracking-widest block mb-1">Email</span>
+                                            <span className="text-md font-bold text-white tracking-tight">{patient.email}</span>
                                         </div>
                                     </div>
                                 )}
                                 {patient.address && (
-                                    <div className="flex items-center gap-4 p-3 rounded-2xl bg-white border border-slate-100 hover:border-[#b78a5d]/50 transition-colors group">
-                                        <div className="w-10 h-10 rounded-xl bg-slate-50 flex items-center justify-center text-slate-400 group-hover:bg-[#b78a5d] group-hover:text-white transition-colors">
-                                            <MapPin size={18} />
+                                    <div className="flex items-center gap-4 p-4 rounded-2xl bg-white/5 border border-white/5 hover:border-[#b78a5d]/30 transition-all group">
+                                        <div className="w-12 h-12 rounded-xl bg-white/5 flex items-center justify-center text-slate-400 group-hover:bg-[#b78a5d] group-hover:text-white transition-all">
+                                            <MapPin size={20} />
                                         </div>
                                         <div className="flex-1">
-                                            <span className="text-xs text-slate-400 font-medium block">{t('address')}</span>
-                                            <span className="text-sm font-bold text-[#0a192f]">{patient.address}</span>
+                                            <span className="text-[9px] text-slate-500 font-black uppercase tracking-widest block mb-1">{t('address')}</span>
+                                            <span className="text-md font-bold text-white tracking-tight leading-relaxed">{patient.address}</span>
                                         </div>
                                     </div>
                                 )}
@@ -148,8 +153,8 @@ export function PatientDetailsDialog({ patient, isOpen, onClose }: PatientDetail
 
                         {/* 3. Social Media */}
                         <div className="space-y-4">
-                            <h3 className="text-sm font-bold text-[#b78a5d] uppercase tracking-widest flex items-center gap-2">
-                                <span className="w-8 h-[2px] bg-[#b78a5d]"></span>
+                            <h3 className="text-[11px] font-black text-[#f59e0b] uppercase tracking-[0.2em] flex items-center gap-3">
+                                <span className="w-12 h-px bg-gradient-to-r from-[#f59e0b] to-transparent opacity-50"></span>
                                 {t('social_media')}
                             </h3>
                             <div className="flex flex-wrap gap-3">
@@ -164,8 +169,8 @@ export function PatientDetailsDialog({ patient, isOpen, onClose }: PatientDetail
                                     </a>
                                 )}
                                 {patient.tiktok && (
-                                    <a href={`https://tiktok.com/@${patient.tiktok.replace('@', '')}`} target="_blank" rel="noopener noreferrer" className="flex items-center gap-2 px-4 py-2 rounded-xl bg-black/5 text-black font-bold text-sm hover:bg-black hover:text-white transition-all">
-                                        <Music size={18} /> TikTok
+                                    <a href={`https://tiktok.com/@${patient.tiktok.replace('@', '')}`} target="_blank" rel="noopener noreferrer" className="flex items-center gap-2 px-4 py-3 rounded-2xl bg-white/5 text-white font-black uppercase tracking-widest text-[10px] border border-white/5 hover:bg-white hover:text-black transition-all">
+                                        <Music size={16} /> TikTok
                                     </a>
                                 )}
                                 {patient.snapchat && (
@@ -184,11 +189,11 @@ export function PatientDetailsDialog({ patient, isOpen, onClose }: PatientDetail
                         {/* 4. Notes/Activity */}
                         {patient.followUpStatus && (
                             <div className="space-y-4">
-                                <h3 className="text-sm font-bold text-[#b78a5d] uppercase tracking-widest flex items-center gap-2">
-                                    <span className="w-8 h-[2px] bg-[#b78a5d]"></span>
+                                <h3 className="text-[11px] font-black text-[#f59e0b] uppercase tracking-[0.2em] flex items-center gap-3">
+                                    <span className="w-12 h-px bg-gradient-to-r from-[#f59e0b] to-transparent opacity-50"></span>
                                     {t('activity')}
                                 </h3>
-                                <div className="p-4 rounded-2xl bg-slate-50 border border-slate-100 text-sm text-slate-600 leading-relaxed italic">
+                                <div className="p-6 rounded-[2rem] bg-white/5 border border-white/5 text-slate-300 leading-relaxed italic text-md shadow-inner">
                                     &ldquo;{patient.followUpStatus}&rdquo;
                                 </div>
                             </div>

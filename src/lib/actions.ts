@@ -693,3 +693,49 @@ export async function getMonthlyFinancials(month?: number, year?: number) {
         return { totalSales: 0, totalExpenses: 0, netIncome: 0, salesCount: 0, menCount: 0, womenCount: 0, cashTotal: 0, networkTotal: 0 };
     }
 }
+
+export async function getUnifiedAnalytics() {
+    try {
+        const now = new Date();
+
+        // 1. Daily (Current Day)
+        const startOfToday = new Date(now);
+        startOfToday.setHours(0, 0, 0, 0);
+        const endOfToday = new Date(now);
+        endOfToday.setHours(23, 59, 59, 999);
+
+        // 2. Weekly (Last 7 Days)
+        const sevenDaysAgo = new Date(now);
+        sevenDaysAgo.setDate(now.getDate() - 7);
+        sevenDaysAgo.setHours(0, 0, 0, 0);
+
+        // 3. Monthly (Current Calendar Month)
+        const startOfMonth = new Date(now.getFullYear(), now.getMonth(), 1);
+        const endOfMonth = new Date(now.getFullYear(), now.getMonth() + 1, 0, 23, 59, 59, 999);
+
+        const [dailySales, weeklySales, monthlySales, monthlyExpenses] = await Promise.all([
+            prisma.sale.findMany({ where: { createdAt: { gte: startOfToday, lte: endOfToday } } }),
+            prisma.sale.findMany({ where: { createdAt: { gte: sevenDaysAgo } } }),
+            prisma.sale.findMany({ where: { createdAt: { gte: startOfMonth, lte: endOfMonth } } }),
+            prisma.expense.findMany({ where: { date: { gte: startOfMonth, lte: endOfMonth } } })
+        ]);
+
+        const dailyRevenue = dailySales.reduce((sum, s) => sum + s.totalAmount, 0);
+        const weeklyRevenue = weeklySales.reduce((sum, s) => sum + s.totalAmount, 0);
+        const monthlyRevenue = monthlySales.reduce((sum, s) => sum + s.totalAmount, 0);
+        const totalExpenses = monthlyExpenses.reduce((sum, e) => sum + e.amount, 0);
+
+        return {
+            daily: dailyRevenue,
+            weekly: weeklyRevenue,
+            monthly: monthlyRevenue,
+            expenses: totalExpenses,
+            net: monthlyRevenue - totalExpenses,
+            salesCount: monthlySales.length,
+            todayCount: dailySales.length
+        };
+    } catch (e) {
+        console.error("Failed to fetch unified analytics:", e);
+        return { daily: 0, weekly: 0, monthly: 0, expenses: 0, net: 0, salesCount: 0, todayCount: 0 };
+    }
+}

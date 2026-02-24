@@ -146,9 +146,9 @@ export function BackupRestoreDialog({ isOpen, onClose }: BackupRestoreDialogProp
     };
 
     return (
-        <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-50 p-4">
+        <div className="fixed inset-0 bg-black/70 backdrop-blur-sm flex items-center justify-center z-50 p-4">
             <div className={cn(
-                "bg-white rounded-3xl shadow-2xl max-w-lg w-full p-8 relative animate-in fade-in slide-in-from-bottom-4",
+                "bg-[#0a192f] rounded-[2.5rem] shadow-2xl max-w-lg w-full p-10 relative animate-in fade-in slide-in-from-bottom-8 border border-white/10",
                 isRTL && "text-right"
             )} dir={isRTL ? "rtl" : "ltr"}>
                 <button
@@ -161,9 +161,9 @@ export function BackupRestoreDialog({ isOpen, onClose }: BackupRestoreDialogProp
                     <X size={24} />
                 </button>
 
-                <div className="mb-6">
-                    <h2 className="text-2xl font-bold text-[#0a192f] mb-2">{t('backup_restore')}</h2>
-                    <p className="text-sm text-slate-500">{t('backup_mgmt')}</p>
+                <div className="mb-8">
+                    <h2 className="text-3xl font-serif italic text-white mb-2">{t('backup_restore')}</h2>
+                    <p className="text-sm text-slate-400 font-medium">{t('backup_mgmt')}</p>
                 </div>
 
                 {message && (
@@ -188,7 +188,7 @@ export function BackupRestoreDialog({ isOpen, onClose }: BackupRestoreDialogProp
                     <button
                         onClick={handleExport}
                         disabled={isExporting}
-                        className="w-full h-14 bg-[#0a192f] hover:bg-[#b78a5d] text-white rounded-2xl font-bold uppercase tracking-wider text-sm transition-all shadow-lg hover:shadow-xl disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-3"
+                        className="w-full h-14 bg-white/5 border border-white/10 hover:bg-[#b78a5d] hover:border-[#b78a5d] text-white rounded-2xl font-bold uppercase tracking-wider text-sm transition-all shadow-xl disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-3"
                     >
                         <Download size={20} />
                         {isExporting ? t('exporting') : t('export_json')}
@@ -207,7 +207,7 @@ export function BackupRestoreDialog({ isOpen, onClose }: BackupRestoreDialogProp
                         <label
                             htmlFor="import-file"
                             className={cn(
-                                "w-full h-14 bg-blue-600 hover:bg-blue-700 text-white rounded-2xl font-bold uppercase tracking-wider text-sm transition-all shadow-lg hover:shadow-xl flex items-center justify-center gap-3 cursor-pointer",
+                                "w-full h-14 bg-white/5 border border-white/10 hover:bg-emerald-600 hover:border-emerald-600 text-white rounded-2xl font-bold uppercase tracking-wider text-sm transition-all shadow-xl flex items-center justify-center gap-3 cursor-pointer",
                                 isImporting && "opacity-50 cursor-not-allowed"
                             )}
                         >
@@ -226,12 +226,12 @@ export function BackupRestoreDialog({ isOpen, onClose }: BackupRestoreDialogProp
                     </button>
                 </div>
 
-                <div className="mt-6 p-4 bg-amber-50 border border-amber-200 rounded-2xl">
-                    <div className={cn("flex items-start gap-2", isRTL && "flex-row-reverse")}>
-                        <AlertTriangle size={16} className="text-amber-600 flex-shrink-0 mt-0.5" />
-                        <div className={cn("text-xs text-amber-800", isRTL && "text-right")}>
-                            <p className="font-bold mb-1">{t('important_notes')}:</p>
-                            <ul className={cn("list-disc space-y-1", isRTL ? "list-inside" : "list-inside")}>
+                <div className="mt-8 p-6 bg-amber-500/5 border border-amber-500/10 rounded-2xl">
+                    <div className={cn("flex items-start gap-3", isRTL && "flex-row-reverse")}>
+                        <AlertTriangle size={18} className="text-[#f59e0b] flex-shrink-0 mt-0.5" />
+                        <div className={cn("text-[11px] text-slate-400 font-medium", isRTL && "text-right")}>
+                            <p className="text-[#f59e0b] font-black uppercase tracking-widest mb-2">{t('important_notes')}:</p>
+                            <ul className={cn("list-disc space-y-2", isRTL ? "pr-4" : "pl-4")}>
                                 <li>{t('export_note')}</li>
                                 <li>{t('import_note')}</li>
                                 <li>{t('clear_note')}</li>
