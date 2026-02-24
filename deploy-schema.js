@@ -102,6 +102,37 @@ async function deploySchema() {
         CONSTRAINT "WhatsAppSession_pkey" PRIMARY KEY ("id")
     );
 
+    CREATE TABLE IF NOT EXISTS "Sale" (
+        "id" TEXT NOT NULL,
+        "patientId" TEXT NOT NULL,
+        "gender" TEXT,
+        "cupsCount" INTEGER NOT NULL DEFAULT 0,
+        "disease" TEXT,
+        "totalAmount" DOUBLE PRECISION NOT NULL DEFAULT 0,
+        "cashAmount" DOUBLE PRECISION NOT NULL DEFAULT 0,
+        "networkAmount" DOUBLE PRECISION NOT NULL DEFAULT 0,
+        "offers" TEXT,
+        "notes" TEXT,
+        "saleDate" TIMESTAMP(3),
+        "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+        "updatedAt" TIMESTAMP(3) NOT NULL,
+        "createdById" TEXT,
+        CONSTRAINT "Sale_pkey" PRIMARY KEY ("id")
+    );
+
+    CREATE TABLE IF NOT EXISTS "Expense" (
+        "id" TEXT NOT NULL,
+        "title" TEXT NOT NULL,
+        "amount" DOUBLE PRECISION NOT NULL,
+        "category" TEXT,
+        "notes" TEXT,
+        "date" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+        "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+        "updatedAt" TIMESTAMP(3) NOT NULL,
+        "createdById" TEXT,
+        CONSTRAINT "Expense_pkey" PRIMARY KEY ("id")
+    );
+
     -- Indices
     CREATE UNIQUE INDEX IF NOT EXISTS "User_username_key" ON "User"("username");
     CREATE UNIQUE INDEX IF NOT EXISTS "Employee_username_key" ON "Employee"("username");
@@ -116,12 +147,21 @@ async function deploySchema() {
     CREATE INDEX IF NOT EXISTS "WhatsAppMessage_patientId_idx" ON "WhatsAppMessage"("patientId");
     CREATE INDEX IF NOT EXISTS "WhatsAppMessage_senderPhone_idx" ON "WhatsAppMessage"("senderPhone");
     CREATE INDEX IF NOT EXISTS "WhatsAppMessage_timestamp_idx" ON "WhatsAppMessage"("timestamp");
+    CREATE INDEX IF NOT EXISTS "Sale_patientId_idx" ON "Sale"("patientId");
+    CREATE INDEX IF NOT EXISTS "Sale_createdAt_idx" ON "Sale"("createdAt");
+    CREATE INDEX IF NOT EXISTS "Sale_createdById_idx" ON "Sale"("createdById");
+    CREATE INDEX IF NOT EXISTS "Expense_date_idx" ON "Expense"("date");
+    CREATE INDEX IF NOT EXISTS "Expense_createdById_idx" ON "Expense"("createdById");
     
     -- Relations
     DO $$
     BEGIN
         IF NOT EXISTS (SELECT 1 FROM pg_constraint WHERE conname = 'WhatsAppMessage_patientId_fkey') THEN
             ALTER TABLE "WhatsAppMessage" ADD CONSTRAINT "WhatsAppMessage_patientId_fkey" FOREIGN KEY ("patientId") REFERENCES "Patient"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+        END IF;
+
+        IF NOT EXISTS (SELECT 1 FROM pg_constraint WHERE conname = 'Sale_patientId_fkey') THEN
+            ALTER TABLE "Sale" ADD CONSTRAINT "Sale_patientId_fkey" FOREIGN KEY ("patientId") REFERENCES "Patient"("id") ON DELETE CASCADE ON UPDATE CASCADE;
         END IF;
     END
     $$;
