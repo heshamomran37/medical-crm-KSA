@@ -18,7 +18,7 @@ function SubmitButton() {
             disabled={pending}
             className="h-10 px-4 rounded-xl bg-[#b78a5d] text-white text-sm font-bold hover:bg-[#b78a5d]/90 transition-all shadow-lg shadow-[#b78a5d]/20 w-full flex items-center justify-center gap-2 disabled:opacity-50"
         >
-            {pending ? t('updating') || "Updating..." : t('update_sale') || "Update Sale"}
+            {pending ? t('updating') : t('update_sale')}
         </button>
     );
 }
@@ -60,10 +60,10 @@ export function EditSaleDialog({ sale }: { sale: any }) {
         <>
             <button
                 onClick={() => setIsOpen(true)}
-                className="p-2 rounded-xl hover:bg-white/5 text-slate-500 hover:text-[#b78a5d] transition-all hover:scale-110 active:scale-95 border border-transparent hover:border-white/10"
+                className="p-2.5 rounded-xl hover:bg-white/10 text-slate-400 hover:text-[#b78a5d] transition-all active:scale-95 border border-white/5 hover:border-[#b78a5d]/30"
                 title={t('edit')}
             >
-                <Pencil size={14} />
+                <Pencil size={16} />
             </button>
 
             {isOpen && (
@@ -81,7 +81,7 @@ export function EditSaleDialog({ sale }: { sale: any }) {
                         <div className="flex justify-between items-center mb-8">
                             <div>
                                 <h2 className="text-3xl font-serif italic text-white tracking-tight flex items-center gap-3">
-                                    {t('edit_sale') || "Edit Sale"}
+                                    {t('edit_sale')}
                                     <div className="h-px w-24 bg-gradient-to-r from-[#b78a5d]/50 to-transparent" />
                                 </h2>
                                 <p className="text-slate-400 text-xs mt-2 uppercase tracking-[0.2em] font-medium opacity-70">Update Transaction Details</p>
@@ -105,6 +105,8 @@ export function EditSaleDialog({ sale }: { sale: any }) {
                         </div>
 
                         <form action={formAction} className="space-y-6">
+                            <input type="hidden" name="patientId" value={sale.patientId} />
+                            <input type="hidden" name="gender" value={sale.gender || ""} />
                             <div className="space-y-2">
                                 <label className="text-[10px] font-black uppercase tracking-[0.2em] text-[#b78a5d] ml-1 flex items-center gap-2">
                                     <User size={10} />
@@ -225,7 +227,7 @@ export function EditSaleDialog({ sale }: { sale: any }) {
                                     "p-4 rounded-xl text-sm text-center font-bold animate-in zoom-in-95 duration-300",
                                     state.message === "Sale updated successfully!" ? "bg-emerald-500/10 text-emerald-400 border border-emerald-500/20" : "bg-red-500/10 text-red-400 border border-red-500/20"
                                 )}>
-                                    {state.message === "Sale updated successfully!" ? t('sale_updated_success') || "Sale updated successfully!" : state.message}
+                                    {state.message === "Sale updated successfully!" ? t('sale_updated_success') : state.message}
                                 </div>
                             )}
                         </form>

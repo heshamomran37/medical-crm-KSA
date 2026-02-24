@@ -544,6 +544,8 @@ export async function updateSale(id: string, prevState: { message: string } | un
         await prisma.sale.update({
             where: { id },
             data: {
+                patientId: data.patientId,
+                gender: data.gender,
                 cupsCount: data.cupsCount,
                 disease: data.disease || null,
                 totalAmount: data.totalAmount,

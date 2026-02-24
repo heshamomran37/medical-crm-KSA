@@ -9,10 +9,12 @@ import {
     Wallet,
     Plus,
     TrendingUp,
-    Receipt
+    Receipt,
+    Trash2
 } from "lucide-react";
 import { useLanguage } from "@/context/LanguageContext";
 import { cn } from "@/lib/utils";
+import { deleteSale } from "@/lib/actions";
 import { AddSaleDialog } from "./AddSaleDialog";
 import { EditSaleDialog } from "./EditSaleDialog";
 import { ExpenseDialog } from "./ExpenseDialog";
@@ -118,21 +120,21 @@ export function SalesPageClient({ initialSales, initialTotals, monthlyStats, pat
                 <div className="absolute inset-0 bg-gradient-to-b from-white/[0.02] to-transparent pointer-events-none" />
                 <div className="overflow-x-auto">
                     <table className="w-full text-left" dir={isRTL ? "rtl" : "ltr"}>
-                        <thead className="bg-white/5 text-[10px] font-black uppercase tracking-[0.2em] text-[#b78a5d] border-b border-white/10">
+                        <thead className="bg-white/10 text-[11px] font-black uppercase tracking-[0.2em] text-[#d4a87a] border-b border-white/20">
                             <tr>
-                                <th className="px-8 py-5">{t('patient_name')}</th>
-                                <th className="px-6 py-5 text-center">{t('gender')}</th>
-                                <th className="px-6 py-5">{t('cups_count') || "Cups"}</th>
-                                <th className="px-6 py-5">{t('disease_complaint') || "Complaint"}</th>
-                                <th className="px-6 py-5">{t('total')}</th>
-                                <th className="px-6 py-5">{t('method') || "Method"}</th>
-                                <th className="px-6 py-5">{t('date')}</th>
-                                <th className="px-8 py-5 text-center">{t('actions') || "Actions"}</th>
+                                <th className="px-8 py-6">{t('patient_name')}</th>
+                                <th className="px-6 py-6 text-center">{t('gender')}</th>
+                                <th className="px-6 py-6">{t('cups_count')}</th>
+                                <th className="px-6 py-6">{t('disease_complaint')}</th>
+                                <th className="px-6 py-6">{t('total')}</th>
+                                <th className="px-6 py-6 font-bold">{t('method')}</th>
+                                <th className="px-6 py-6">{t('date')}</th>
+                                <th className="px-8 py-6 text-center">{t('actions')}</th>
                             </tr>
                         </thead>
-                        <tbody className="divide-y divide-white/5">
+                        <tbody className="divide-y divide-white/10">
                             {initialSales.map((sale) => (
-                                <tr key={sale.id} className="hover:bg-white/[0.03] transition-all group/row border-transparent hover:border-white/5">
+                                <tr key={sale.id} className="hover:bg-white/[0.05] transition-all group/row border-transparent">
                                     <td className="px-8 py-5">
                                         <div className="flex flex-col">
                                             <span className="text-white font-bold tracking-tight text-sm group-hover/row:text-[#b78a5d] transition-colors">{sale.patient.name}</span>
@@ -153,8 +155,8 @@ export function SalesPageClient({ initialSales, initialTotals, monthlyStats, pat
                                             <span className="text-[10px] text-slate-500 font-bold uppercase tracking-tighter line-clamp-1">{t('cups')}</span>
                                         </div>
                                     </td>
-                                    <td className="px-6 py-5 text-slate-400 text-xs max-w-xs truncate font-medium">
-                                        {sale.disease || <span className="opacity-20 italic">---</span>}
+                                    <td className="px-6 py-5 text-slate-300 text-xs max-w-xs truncate font-medium">
+                                        {sale.disease || <span className="opacity-40 italic">---</span>}
                                     </td>
                                     <td className="px-6 py-5">
                                         <div className="flex flex-col">
@@ -165,13 +167,13 @@ export function SalesPageClient({ initialSales, initialTotals, monthlyStats, pat
                                     <td className="px-6 py-5 text-center">
                                         <div className="flex flex-col gap-1.5 min-w-[80px]">
                                             {sale.cashAmount > 0 && (
-                                                <span className="px-2 py-0.5 rounded-lg bg-amber-500/5 text-amber-500 text-[9px] font-black uppercase tracking-widest border border-amber-500/10 flex items-center justify-center gap-1.5">
-                                                    <Wallet size={8} /> {sale.cashAmount}
+                                                <span className="px-2 py-1 rounded-lg bg-amber-500/10 text-amber-500 text-[10px] font-black uppercase tracking-widest border border-amber-500/20 flex items-center justify-center gap-1.5 shadow-sm shadow-amber-500/10">
+                                                    <Wallet size={10} /> {sale.cashAmount}
                                                 </span>
                                             )}
                                             {sale.networkAmount > 0 && (
-                                                <span className="px-2 py-0.5 rounded-lg bg-blue-500/5 text-blue-500 text-[9px] font-black uppercase tracking-widest border border-blue-500/10 flex items-center justify-center gap-1.5">
-                                                    <CreditCard size={8} /> {sale.networkAmount}
+                                                <span className="px-2 py-1 rounded-lg bg-blue-500/10 text-blue-500 text-[10px] font-black uppercase tracking-widest border border-blue-500/20 flex items-center justify-center gap-1.5 shadow-sm shadow-blue-500/10">
+                                                    <CreditCard size={10} /> {sale.networkAmount}
                                                 </span>
                                             )}
                                         </div>
@@ -190,8 +192,19 @@ export function SalesPageClient({ initialSales, initialTotals, monthlyStats, pat
                                         </div>
                                     </td>
                                     <td className="px-8 py-5 text-center">
-                                        <div className="flex justify-center group-hover/row:scale-110 transition-transform">
+                                        <div className="flex justify-center items-center gap-2 transition-all">
                                             <EditSaleDialog sale={sale} />
+                                            <button
+                                                onClick={async () => {
+                                                    if (confirm(t('confirm_delete_sale') || "Are you sure you want to delete this sale?")) {
+                                                        await deleteSale(sale.id);
+                                                    }
+                                                }}
+                                                className="p-2.5 rounded-xl hover:bg-red-500/10 text-slate-400 hover:text-red-500 transition-all active:scale-95 border border-white/5 hover:border-red-500/30"
+                                                title={t('delete')}
+                                            >
+                                                <Trash2 size={16} />
+                                            </button>
                                         </div>
                                     </td>
                                 </tr>

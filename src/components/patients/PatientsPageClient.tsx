@@ -121,7 +121,7 @@ export function PatientsPageClient({ patients, query, type, totalPages, currentP
                             onClick={() => setActiveTab('list')}
                             className={cn(
                                 "flex items-center gap-2 px-6 py-2.5 rounded-xl text-xs font-black uppercase tracking-widest transition-all",
-                                activeTab === 'list' ? "bg-[#0a192f] text-white shadow-lg" : "text-slate-400 hover:bg-slate-50"
+                                activeTab === 'list' ? "bg-[#b78a5d] text-white shadow-lg shadow-[#b78a5d]/20" : "text-slate-400 hover:bg-slate-50"
                             )}
                         >
                             <List size={16} />
@@ -131,7 +131,7 @@ export function PatientsPageClient({ patients, query, type, totalPages, currentP
                             onClick={() => setActiveTab('add')}
                             className={cn(
                                 "flex items-center gap-2 px-6 py-2.5 rounded-xl text-xs font-black uppercase tracking-widest transition-all",
-                                activeTab === 'add' ? "bg-[#0a192f] text-white shadow-lg" : "text-slate-400 hover:bg-slate-50"
+                                activeTab === 'add' ? "bg-[#b78a5d] text-white shadow-lg shadow-[#b78a5d]/20" : "text-slate-400 hover:bg-slate-50"
                             )}
                         >
                             <UserPlus size={16} />
