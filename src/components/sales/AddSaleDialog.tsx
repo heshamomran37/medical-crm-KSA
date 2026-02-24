@@ -305,6 +305,3 @@ export function AddSaleDialog({ patients }: { patients: any[] }) {
         </>
     );
 }
-        </>
-    );
-}

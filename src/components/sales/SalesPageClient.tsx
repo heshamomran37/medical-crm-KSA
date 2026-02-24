@@ -114,67 +114,83 @@ export function SalesPageClient({ initialSales, initialTotals, monthlyStats, pat
             </div>
 
             {/* Sales Table */}
-            <div className="bg-[#0a192f] border border-white/5 rounded-[2rem] overflow-hidden shadow-2xl">
-                <div className="p-6 border-b border-white/5 flex justify-between items-center">
-                    <h2 className="text-xl font-serif italic text-white">{t('recent_sales') || "Recent Sessions"}</h2>
-                </div>
+            <div className="relative group/table overflow-hidden rounded-[2rem] border border-white/10 bg-[#0a192f]/50 backdrop-blur-xl shadow-2xl">
+                <div className="absolute inset-0 bg-gradient-to-b from-white/[0.02] to-transparent pointer-events-none" />
                 <div className="overflow-x-auto">
                     <table className="w-full text-left" dir={isRTL ? "rtl" : "ltr"}>
-                        <thead>
-                            <tr className="bg-white/5 text-slate-500 text-[10px] font-black uppercase tracking-[0.2em]">
-                                <th className="px-6 py-4">{t('patient_name')}</th>
-                                <th className="px-6 py-4">{t('gender')}</th>
-                                <th className="px-6 py-4">{t('cups_count') || "Cups"}</th>
-                                <th className="px-6 py-4">{t('disease_complaint') || "Complaint"}</th>
-                                <th className="px-6 py-4">{t('total')}</th>
-                                <th className="px-6 py-4">{t('method') || "Method"}</th>
-                                <th className="px-6 py-4">{t('date')}</th>
-                                <th className="px-6 py-4 text-center">{t('actions') || "Actions"}</th>
+                        <thead className="bg-white/5 text-[10px] font-black uppercase tracking-[0.2em] text-[#b78a5d] border-b border-white/10">
+                            <tr>
+                                <th className="px-8 py-5">{t('patient_name')}</th>
+                                <th className="px-6 py-5 text-center">{t('gender')}</th>
+                                <th className="px-6 py-5">{t('cups_count') || "Cups"}</th>
+                                <th className="px-6 py-5">{t('disease_complaint') || "Complaint"}</th>
+                                <th className="px-6 py-5">{t('total')}</th>
+                                <th className="px-6 py-5">{t('method') || "Method"}</th>
+                                <th className="px-6 py-5">{t('date')}</th>
+                                <th className="px-8 py-5 text-center">{t('actions') || "Actions"}</th>
                             </tr>
                         </thead>
                         <tbody className="divide-y divide-white/5">
                             {initialSales.map((sale) => (
-                                <tr key={sale.id} className="hover:bg-white/[0.02] transition-colors group">
-                                    <td className="px-6 py-4">
+                                <tr key={sale.id} className="hover:bg-white/[0.03] transition-all group/row border-transparent hover:border-white/5">
+                                    <td className="px-8 py-5">
                                         <div className="flex flex-col">
-                                            <span className="text-white font-medium">{sale.patient.name}</span>
-                                            <span className="text-slate-500 text-xs">{sale.patient.phone}</span>
+                                            <span className="text-white font-bold tracking-tight text-sm group-hover/row:text-[#b78a5d] transition-colors">{sale.patient.name}</span>
+                                            <span className="text-slate-500 text-[10px] font-mono tracking-widest mt-0.5">{sale.patient.phone}</span>
                                         </div>
                                     </td>
-                                    <td className="px-6 py-4">
+                                    <td className="px-6 py-5 text-center">
                                         <span className={cn(
-                                            "px-2 py-0.5 rounded-full text-[10px] font-bold uppercase",
-                                            sale.gender === 'Male' ? "bg-blue-500/10 text-blue-400 border border-blue-500/20" : "bg-pink-500/10 text-pink-400 border border-pink-500/20"
+                                            "px-3 py-1 rounded-full text-[9px] font-black uppercase tracking-widest inline-block border",
+                                            sale.gender === 'Male' ? "bg-blue-500/5 text-blue-400 border-blue-500/20" : "bg-pink-500/5 text-pink-400 border-pink-500/20"
                                         )}>
                                             {t(sale.gender?.toLowerCase() || 'male')}
                                         </span>
                                     </td>
-                                    <td className="px-6 py-4 text-slate-300 font-bold">{sale.cupsCount}</td>
-                                    <td className="px-6 py-4 text-slate-400 text-sm max-w-xs truncate">{sale.disease || "-"}</td>
-                                    <td className="px-6 py-4">
-                                        <span className="text-white font-serif italic font-bold">{sale.totalAmount} <span className="text-[10px] text-slate-500">SAR</span></span>
-                                    </td>
-                                    <td className="px-6 py-4">
-                                        <div className="flex flex-col gap-1">
-                                            {sale.cashAmount > 0 && <span className="text-[10px] text-amber-500 font-bold flex items-center gap-1 uppercase tracking-tighter"><Wallet size={10} /> {t('cash')}: {sale.cashAmount}</span>}
-                                            {sale.networkAmount > 0 && <span className="text-[10px] text-blue-500 font-bold flex items-center gap-1 uppercase tracking-tighter"><CreditCard size={10} /> {t('network')}: {sale.networkAmount}</span>}
+                                    <td className="px-6 py-5">
+                                        <div className="flex items-center gap-2">
+                                            <span className="text-white font-black text-lg font-serif italic">{sale.cupsCount}</span>
+                                            <span className="text-[10px] text-slate-500 font-bold uppercase tracking-tighter line-clamp-1">{t('cups')}</span>
                                         </div>
                                     </td>
-                                    <td className="px-6 py-4 text-slate-500 text-[11px]">
+                                    <td className="px-6 py-5 text-slate-400 text-xs max-w-xs truncate font-medium">
+                                        {sale.disease || <span className="opacity-20 italic">---</span>}
+                                    </td>
+                                    <td className="px-6 py-5">
                                         <div className="flex flex-col">
-                                            <span className="text-slate-300 font-bold capitalize">
-                                                {new Date(sale.saleDate || sale.createdAt).toLocaleDateString('ar-SA', { weekday: 'long' })}
+                                            <span className="text-white font-black text-base font-serif italic tracking-tight">{sale.totalAmount}</span>
+                                            <span className="text-[9px] text-[#b78a5d] font-black uppercase tracking-[0.2em]">{t('sar')}</span>
+                                        </div>
+                                    </td>
+                                    <td className="px-6 py-5 text-center">
+                                        <div className="flex flex-col gap-1.5 min-w-[80px]">
+                                            {sale.cashAmount > 0 && (
+                                                <span className="px-2 py-0.5 rounded-lg bg-amber-500/5 text-amber-500 text-[9px] font-black uppercase tracking-widest border border-amber-500/10 flex items-center justify-center gap-1.5">
+                                                    <Wallet size={8} /> {sale.cashAmount}
+                                                </span>
+                                            )}
+                                            {sale.networkAmount > 0 && (
+                                                <span className="px-2 py-0.5 rounded-lg bg-blue-500/5 text-blue-500 text-[9px] font-black uppercase tracking-widest border border-blue-500/10 flex items-center justify-center gap-1.5">
+                                                    <CreditCard size={8} /> {sale.networkAmount}
+                                                </span>
+                                            )}
+                                        </div>
+                                    </td>
+                                    <td className="px-6 py-5">
+                                        <div className="flex flex-col items-start gap-0.5">
+                                            <span className="text-slate-300 font-black text-[10px] uppercase tracking-wider">
+                                                {new Date(sale.saleDate || sale.createdAt).toLocaleDateString('ar-SA', { weekday: 'short' })}
                                             </span>
-                                            <span>
-                                                {new Date(sale.saleDate || sale.createdAt).toLocaleDateString('ar-SA', { year: 'numeric', month: '2-digit', day: '2-digit' })}
+                                            <span className="text-slate-500 text-[11px] font-medium">
+                                                {new Date(sale.saleDate || sale.createdAt).toLocaleDateString('ar-SA', { day: '2-digit', month: '2-digit', year: 'numeric' })}
                                             </span>
-                                            <span className="text-slate-500 text-[10px]">
+                                            <span className="bg-white/5 px-2 py-0.5 rounded text-slate-400 text-[9px] font-bold mt-1">
                                                 {new Date(sale.saleDate || sale.createdAt).toLocaleTimeString('ar-SA', { hour: '2-digit', minute: '2-digit' })}
                                             </span>
                                         </div>
                                     </td>
-                                    <td className="px-6 py-4 text-center">
-                                        <div className="flex justify-center">
+                                    <td className="px-8 py-5 text-center">
+                                        <div className="flex justify-center group-hover/row:scale-110 transition-transform">
                                             <EditSaleDialog sale={sale} />
                                         </div>
                                     </td>
@@ -182,8 +198,13 @@ export function SalesPageClient({ initialSales, initialTotals, monthlyStats, pat
                             ))}
                             {initialSales.length === 0 && (
                                 <tr>
-                                    <td colSpan={7} className="px-6 py-12 text-center text-slate-500 uppercase tracking-widest text-xs">
-                                        {t('no_sales_today') || "No sessions recorded today."}
+                                    <td colSpan={8} className="px-6 py-24 text-center">
+                                        <div className="w-16 h-16 rounded-full bg-white/5 flex items-center justify-center mx-auto mb-4 border border-white/5 opacity-50">
+                                            <Receipt size={32} className="text-slate-600" />
+                                        </div>
+                                        <p className="text-slate-500 uppercase tracking-[0.3em] text-[10px] font-black">
+                                            {t('no_sales_today') || "No sessions recorded today."}
+                                        </p>
                                     </td>
                                 </tr>
                             )}
