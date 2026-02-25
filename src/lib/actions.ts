@@ -614,6 +614,19 @@ export async function getSalesSummary(date?: Date) {
     }
 }
 
+export async function getRecentActivityLogs() {
+    try {
+        const logs = await prisma.activityLog.findMany({
+            orderBy: { createdAt: "desc" },
+            take: 15,
+        });
+        return logs;
+    } catch (e) {
+        console.error("Failed to fetch activity logs:", e);
+        return [];
+    }
+}
+
 // --- EXPENSE ACTIONS ---
 
 export async function createExpense(prevState: { message: string } | undefined, formData: FormData) {
@@ -728,5 +741,34 @@ export async function getUnifiedAnalytics() {
     } catch (e) {
         console.error("Failed to fetch unified analytics:", e);
         return { daily: 0, weekly: 0, monthly: 0, expenses: 0, net: 0, salesCount: 0, todayCount: 0 };
+    }
+}
+
+export async function deleteAllSalesAndExpenses() {
+    try {
+        const session = await auth();
+        const userRole = session?.user?.role || session?.user?.userType;
+        const isAdmin = userRole === 'ADMIN';
+
+        if (!isAdmin) {
+            return { success: false, message: "Unauthorized: Only administrators can reset data." };
+        }
+
+        // Delete all sales and expenses
+        await prisma.$transaction([
+            prisma.sale.deleteMany({}),
+            prisma.expense.deleteMany({})
+        ]);
+
+        await logActivity("RESET_DATA", `Admin ${session?.user?.name} deleted all sales and expenses data`);
+
+        revalidatePath("/sales");
+        revalidatePath("/dashboard");
+        revalidatePath("/activity");
+
+        return { success: true, message: "All sales and expenses data has been permanently deleted!" };
+    } catch (e) {
+        console.error("Failed to reset data:", e);
+        return { success: false, message: "Failed to reset data." };
     }
 }

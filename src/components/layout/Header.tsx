@@ -1,9 +1,10 @@
 "use client";
 
-import { Bell, Search, Menu, MessageCircle } from "lucide-react";
+import { Search, Menu, MessageCircle } from "lucide-react";
 import { useLanguage } from "@/context/LanguageContext";
 import { cn } from "@/lib/utils";
 import { useRouter } from "next/navigation";
+import { NotificationsDropdown } from "./NotificationsDropdown";
 
 export default function Header() {
     const { language, setLanguage, t, isRTL } = useLanguage();
@@ -12,7 +13,7 @@ export default function Header() {
     return (
         <>
             <header className={cn(
-                "h-16 border-b border-white/10 bg-[#0a192f] sticky top-0 z-10 px-6 flex items-center justify-between",
+                "h-16 border-b border-white/10 bg-[#0a192f] sticky top-0 z-50 px-6 flex items-center justify-between",
                 isRTL && "flex-row-reverse"
             )}>
                 <div className={cn("flex items-center gap-4", isRTL && "flex-row-reverse")}>
@@ -61,7 +62,7 @@ export default function Header() {
 
                     <div className={cn(
                         "flex items-center gap-4 h-8",
-                        isRTL ? "border-r border-white/10 pr-6" : "border-l border-white/10 pl-6"
+                        isRTL ? "border-r border-white/10 pr-4" : "border-l border-white/10 pl-4"
                     )}>
                         {/* WhatsApp Button */}
                         <button
@@ -72,17 +73,10 @@ export default function Header() {
                             <MessageCircle size={20} className="group-hover:text-[#25D366]" />
                         </button>
 
-                        <button className="p-2 relative hover:bg-white/5 rounded-full text-slate-400 hover:text-white transition-colors">
-                            <Bell size={20} />
-                            <span className={cn(
-                                "absolute top-2 w-2 h-2 bg-red-500 rounded-full border-2 border-[#0a192f]",
-                                isRTL ? "left-2" : "right-2"
-                            )}></span>
-                        </button>
+                        <NotificationsDropdown />
                     </div>
                 </div>
             </header>
         </>
     );
 }
-

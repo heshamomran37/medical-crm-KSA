@@ -19,6 +19,8 @@ import { AddSaleDialog } from "./AddSaleDialog";
 import { EditSaleDialog } from "./EditSaleDialog";
 import { ExpenseDialog } from "./ExpenseDialog";
 
+import { ResetDataDialog } from "./ResetDataDialog";
+
 interface SalesPageClientProps {
     initialSales: any[];
     initialTotals: {
@@ -38,9 +40,10 @@ interface SalesPageClientProps {
         todayCount: number;
     };
     patients: any[];
+    isAdmin?: boolean;
 }
 
-export function SalesPageClient({ initialSales, initialTotals, analytics, patients }: SalesPageClientProps) {
+export function SalesPageClient({ initialSales, initialTotals, analytics, patients, isAdmin = false }: SalesPageClientProps) {
     const { t, isRTL } = useLanguage();
     const [view, setView] = useState<'daily' | 'monthly'>('daily');
 
@@ -56,6 +59,7 @@ export function SalesPageClient({ initialSales, initialTotals, analytics, patien
                     <p className="text-slate-400 mt-1">{t('manage_sales_desc') || "Track sessions, payments, and clinic performance."}</p>
                 </div>
                 <div className="flex gap-3">
+                    {isAdmin && <ResetDataDialog />}
                     <ExpenseDialog />
                     <AddSaleDialog patients={patients} />
                 </div>

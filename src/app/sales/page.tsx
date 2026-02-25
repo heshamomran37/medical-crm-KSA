@@ -23,12 +23,16 @@ export default async function SalesPage() {
         orderBy: { name: 'asc' }
     });
 
+    const userRole = session?.user?.role || session?.user?.userType;
+    const isAdmin = userRole === 'ADMIN';
+
     return (
         <SalesPageClient
             initialSales={sales}
             initialTotals={totals}
             analytics={analytics}
             patients={patients}
+            isAdmin={isAdmin}
         />
     );
 }

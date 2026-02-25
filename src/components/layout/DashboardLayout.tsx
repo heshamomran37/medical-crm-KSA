@@ -28,9 +28,9 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
             </div>
 
             <Sidebar />
-            <div className="flex-1 flex flex-col min-w-0">
+            <div className="flex-1 flex flex-col min-w-0 relative z-10">
                 <Header />
-                <main className="flex-1 overflow-y-auto animate-fade-up relative z-10 p-4 md:p-8">
+                <main className="flex-1 overflow-y-auto animate-fade-up relative z-0 p-4 md:p-8">
                     {children}
                 </main>
             </div>
