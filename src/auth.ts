@@ -25,31 +25,43 @@ interface AuthUser {
 // Optimized: Search both tables in parallel and use secure comparison
 async function findUserByCredentials(username: string, password: string): Promise<AuthUser | null> {
     try {
+        console.log("findUserByCredentials called for username:", username);
         const [user, employee] = await Promise.all([
             prisma.user.findFirst({ where: { username } }),
             prisma.employee.findFirst({ where: { username, status: "Active" } })
         ]);
 
+        console.log("Found user:", !!user, "Found employee:", !!employee);
+
         // Check Admin User
-        if (user && await bcrypt.compare(password, user.password)) {
-            return {
-                id: user.id,
-                name: username,
-                role: user.role,
-                userType: "ADMIN"
-            };
+        if (user) {
+            const isMatch = await bcrypt.compare(password, user.password);
+            console.log("User password match:", isMatch);
+            if (isMatch) {
+                return {
+                    id: user.id,
+                    name: username,
+                    role: user.role,
+                    userType: "ADMIN"
+                };
+            }
         }
 
         // Check Employee
-        if (employee && employee.password && await bcrypt.compare(password, employee.password)) {
-            return {
-                id: employee.id,
-                name: employee.name,
-                role: employee.role,
-                userType: "EMPLOYEE"
-            };
+        if (employee && employee.password) {
+            const isMatch = await bcrypt.compare(password, employee.password);
+            console.log("Employee password match:", isMatch);
+            if (isMatch) {
+                return {
+                    id: employee.id,
+                    name: employee.name,
+                    role: employee.role,
+                    userType: "EMPLOYEE"
+                };
+            }
         }
 
+        console.log("No password match found for either user or employee");
         return null;
     } catch (error) {
         console.error("Failed to authenticate:", error);
@@ -61,6 +73,10 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
     secret: process.env.AUTH_SECRET,
     providers: [
         Credentials({
+            credentials: {
+                username: { label: "Username", type: "text" },
+                password: { label: "Password", type: "password" }
+            },
             async authorize(credentials) {
                 const parsedCredentials = z
                     .object({ username: z.string(), password: z.string().min(3) })

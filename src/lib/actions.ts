@@ -90,11 +90,8 @@ export async function authenticate(
         await signIn("credentials", {
             username: formData.get("username"),
             password: formData.get("password"),
-            redirect: false,
+            redirectTo: "/dashboard",
         });
-
-        // If we get here, login was successful (no error thrown)
-        // We can manually redirect now
     } catch (error) {
         if (error instanceof AuthError) {
             switch (error.type) {
@@ -104,14 +101,8 @@ export async function authenticate(
                     return "Something went wrong.";
             }
         }
-        throw error;
+        throw error; // Rethrow to allow Next.js redirect to work
     }
-
-    // Manual redirect after successful login (outside try-catch to avoid catching NEXT_REDIRECT)
-    // However, since we used redirect: false, signIn won't throw a redirect error.
-    // So we can just redirect explicitly.
-    const { redirect } = await import("next/navigation");
-    redirect("/dashboard");
 }
 
 export async function signOutAction() {
